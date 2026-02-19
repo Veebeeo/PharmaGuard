@@ -3,8 +3,8 @@
 **AI-Powered Pharmacogenomic Risk Analysis**
 
 > Decode your genes. Protect your life.
-
-[![Live Demo](https://img.shields.io/badge/Live_Demo-PharmaGuard_AI-2d6a4f?style=for-the-badge)](https://pharmaguard-f2fy.onrender.com)
+[![Live Demo (Vercel)](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://pharma-guard-iota.vercel.app/)
+[![Live Demo(Render)](https://img.shields.io/badge/Live_Demo-PharmaGuard_AI-2d6a4f?style=for-the-badge)](https://pharmaguard-f2fy.onrender.com)
 [![LinkedIn Video](https://img.shields.io/badge/LinkedIn-Demo_Video-0A66C2?style=for-the-badge)](YOUR_LINKEDIN_VIDEO_URL_HERE)
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
@@ -52,7 +52,8 @@ Adverse drug reactions (ADRs) kill **over 100,000 Americans annually**. Many of 
 
 | Resource | Link |
 |----------|------|
-| **Live Application** | [pharmaguard-f2fy.onrender.com](https://pharmaguard-f2fy.onrender.com) | 
+| **Live Application (Vercel)** | [pharma-guard-iota.vercel.app](https://pharma-guard-iota.vercel.app/) |
+| **Live Application (Render)** | [pharmaguard-f2fy.onrender.com](https://pharmaguard-f2fy.onrender.com) |
 | **LinkedIn Video Demo** | *[Coming Soon — link will be updated here]* |
 
 ---
