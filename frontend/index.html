@@ -505,6 +505,21 @@ function navigate(p){
   if(p==='dashboard'&&isLoggedIn())loadDashboard();
 }
 
+window.addEventListener('load', () => {
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token=')) {
+    
+    const params = new URLSearchParams(hash.substring(1));
+    const token = params.get('access_token');
+    if (token) {
+      
+      setAuth(token, { email: "Confirmed User" }); 
+      window.location.hash = "";
+      navigate('home');
+    }
+  }
+});
+
 document.querySelectorAll('.nav-link').forEach(l=>l.addEventListener('click',()=>{if(l.dataset.page)navigate(l.dataset.page)}));
 
 // ━━━ AUTH FUNCTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
