@@ -145,9 +145,9 @@ The system follows a layered architecture with a clear separation between the fr
 ```bash
 # 1. Clone the repository
 git clone https://github.com/Veebeeo/PharmaGuard.git
-cd pharmaguard
+cd PharmaGuard
 
-# 2. Set up environment variables
+# 2. Set up backend environment variables
 cd backend
 cp .env.example .env
 # Edit .env and add:
@@ -155,13 +155,20 @@ cp .env.example .env
 #   SUPABASE_URL=https://your-project.supabase.co   (optional)
 #   SUPABASE_KEY=your_service_role_key               (optional)
 
-# 3. Install Python dependencies
+# 3. Set up frontend environment variables
+cd ../frontend
+cp .env.example .env
+# Edit .env and add:
+#   SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# 4. Install Python dependencies
+cd ../backend
 pip install -r requirements.txt
 
-# 4. Run the development server
+# 5. Run the development server
 uvicorn main:app --reload --port 8000
 
-# 5. Open in browser
+# 6. Open in browser
 # http://localhost:8000
 ```
 
@@ -170,13 +177,24 @@ uvicorn main:app --reload --port 8000
 ### Docker
 
 ```bash
-docker build -t pharmaguard.
+docker build -t pharmaguard-ai .
 docker run -p 10000:10000 \
   -e GOOGLE_API_KEY=your_key_here \
   -e SUPABASE_URL=your_url \
   -e SUPABASE_KEY=your_key \
-  pharmaguard
+  pharmaguard-ai
 ```
+
+### Supabase Database Setup
+
+If using Supabase for the full experience (auth + dashboard + storage):
+
+1. Create a new project at [supabase.com](https://supabase.com)
+2. Open **SQL Editor** and run the entire `supabase_schema.sql` file — this creates all tables, RLS policies, and seeds the pharmacogenomic reference data
+3. Create a **Storage bucket** named `vcf-uploads` (private) via Dashboard → Storage
+4. Copy your project URL and service role key into `.env`
+
+---
 
 ### Supabase Database Setup
 
