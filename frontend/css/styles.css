@@ -115,7 +115,7 @@ body {
   position: absolute;
   inset: 0;
   background: url('../assets/dna-bg.png') center center / cover no-repeat;
-  opacity: 0.8;
+  opacity: 0.5;
   pointer-events: none;
   z-index: 0;
 }

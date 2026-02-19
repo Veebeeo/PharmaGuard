@@ -1,4 +1,6 @@
-const API=window.location.origin;
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:10000' 
+    : 'https://pharmaguard-f2fy.onrender.com';
 let curPage='landing',upFile=null,selDrugs=new Set(),aResults=null;
 
 // ━━━ AUTH STATE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
