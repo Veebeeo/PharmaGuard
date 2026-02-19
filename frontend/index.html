@@ -1,374 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PharmaGuard AI — Pharmacogenomic Risk Analysis</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{--bg-deep:#080b10;--bg-card:#151b25;--bg-elevated:#1e2738;--border:#1e2a3a;--text-1:#e6edf3;--text-2:#8b949e;--text-3:#555d68;--em:#2d6a4f;--em-b:#40916c;--gold:#d4a053;--r-safe:#2d6a4f;--r-safe-bg:rgba(45,106,79,.12);--r-adj:#d4a053;--r-adj-bg:rgba(212,160,83,.12);--r-tox:#c0392b;--r-tox-bg:rgba(192,57,43,.12);--r-ineff:#e74c3c;--r-ineff-bg:rgba(231,76,60,.12);--r-unk:#6c757d;--r-unk-bg:rgba(108,117,125,.12);--fd:'Playfair Display',Georgia,serif;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace;--rad:10px;--tr:.25s cubic-bezier(.4,0,.2,1)}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-deep)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none}
-.bg-mesh::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(600px at 20% 30%,rgba(45,106,79,.08),transparent),radial-gradient(500px at 80% 70%,rgba(212,160,83,.05),transparent);animation:md 25s ease-in-out infinite alternate}
-@keyframes md{0%{transform:translate(0,0)}100%{transform:translate(-30px,20px)}}
-
-/* NAV — hidden until logged in */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,11,16,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:none;align-items:center;justify-content:space-between}
-.nav.vis{display:flex}
-.nav-brand{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;color:var(--text-1)}
-.nav-brand svg{width:32px;height:32px}
-.nav-brand-text{font-family:var(--fd);font-weight:700;font-size:1.15rem}
-.nav-brand-text span{color:var(--em-b)}
-.nav-links{display:flex;gap:6px;align-items:center}
-.nav-link{background:0;border:0;color:var(--text-2);font-family:var(--fb);font-size:.88rem;font-weight:500;padding:8px 18px;border-radius:6px;cursor:pointer;transition:var(--tr)}
-.nav-link:hover{color:var(--text-1);background:rgba(255,255,255,.04)}
-.nav-link.active{color:var(--em-b);background:rgba(45,106,79,.12)}
-.user-tag{font-size:.75rem;color:var(--em-b);background:var(--r-safe-bg);padding:3px 10px;border-radius:999px;white-space:nowrap}
-.nav-logout{background:0;border:1px solid var(--border);color:var(--text-2);font-family:var(--fb);font-size:.8rem;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;transition:var(--tr);margin-left:6px}
-.nav-logout:hover{color:var(--r-tox);border-color:var(--r-tox)}
-
-/* PAGES */
-.app{position:relative;z-index:1}
-.page{display:none;min-height:100vh}
-.page.active{display:block}
-.page.has-nav{padding-top:64px}
-
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--fb);font-weight:600;font-size:.92rem;padding:14px 28px;border-radius:var(--rad);border:0;cursor:pointer;transition:var(--tr);text-decoration:none}
-.btn-p{background:linear-gradient(135deg,var(--em),var(--em-b));color:#fff;box-shadow:0 4px 20px rgba(45,106,79,.3)}
-.btn-p:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(45,106,79,.45)}
-.btn-s{background:var(--bg-card);color:var(--text-1);border:1px solid var(--border)}
-.btn-s:hover{background:var(--bg-elevated);border-color:var(--text-3);transform:translateY(-1px)}
-.btn-sm{padding:8px 16px;font-size:.82rem}
-
-/* ═══ LOGIN PAGE (landing — full screen, no nav) ═══ */
-.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;position:relative}
-.login-left{max-width:480px;margin-right:4rem}
-.login-left h1{font-family:var(--fd);font-weight:800;font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;margin-bottom:1rem}
-.login-left .gt{background:linear-gradient(135deg,var(--em-b),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.login-left p{color:var(--text-2);line-height:1.7;margin-bottom:1.5rem;font-size:.95rem}
-.login-stats{display:flex;gap:2rem}
-.login-stats div{text-align:center}
-.login-stats .sv{font-family:var(--fd);font-size:1.5rem;font-weight:700;color:var(--em-b)}
-.login-stats .sl{font-size:.68rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em}
-.login-card{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:2.5rem;width:400px;max-width:100%}
-.login-card h2{font-family:var(--fd);font-size:1.4rem;font-weight:700;margin-bottom:.3rem;text-align:center}
-.login-card>p{color:var(--text-3);font-size:.82rem;text-align:center;margin-bottom:1.5rem}
-.form-g{margin-bottom:1rem}
-.form-g label{display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem;color:var(--text-2);text-transform:uppercase;letter-spacing:.04em}
-.form-g input{width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--rad);padding:12px 16px;color:var(--text-1);font-family:var(--fb);font-size:.9rem;outline:0;transition:var(--tr)}
-.form-g input:focus{border-color:var(--em-b)}
-.form-g input::placeholder{color:var(--text-3)}
-.login-divider{display:flex;align-items:center;gap:12px;margin:1.2rem 0;font-size:.72rem;color:var(--text-3)}
-.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.login-footer{font-size:.7rem;color:var(--text-3);text-align:center;margin-top:1.2rem;line-height:1.5}
-
-/* ERROR BANNER (reused) */
-.eb{display:none;background:var(--r-tox-bg);border:1px solid rgba(192,57,43,.3);border-radius:var(--rad);padding:.8rem 1rem;margin-bottom:1rem;font-size:.82rem;color:#e8a49c}
-.eb.vis{display:flex;align-items:flex-start;gap:8px}
-.eb.success{background:var(--r-safe-bg);border-color:rgba(45,106,79,.3);color:var(--em-b)}
-.eb-x{margin-left:auto;background:0;border:0;color:inherit;cursor:pointer;font-size:1rem;opacity:.6}
-.eb-x:hover{opacity:1}
-
-/* ═══ HERO (post-login landing) ═══ */
-.hero{min-height:calc(100vh - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 2rem}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(45,106,79,.12);border:1px solid rgba(45,106,79,.25);border-radius:999px;padding:6px 18px 6px 12px;font-size:.78rem;font-weight:500;color:var(--em-b);margin-bottom:2rem;letter-spacing:.03em;text-transform:uppercase;animation:fiu .6s ease-out}
-.pulse{width:8px;height:8px;background:var(--em-b);border-radius:50%;position:relative}
-.pulse::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--em-b);animation:pp 2s ease-out infinite}
-@keyframes pp{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(2.5)}}
-.hero h1{font-family:var(--fd);font-weight:800;font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.08;margin-bottom:1.5rem;max-width:800px;animation:fiu .6s ease-out .1s both}
-.gt{background:linear-gradient(135deg,var(--em-b),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{font-size:1.15rem;color:var(--text-2);max-width:560px;margin-bottom:2.5rem;line-height:1.7;animation:fiu .6s ease-out .2s both}
-.hero-act{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;animation:fiu .6s ease-out .3s both}
-.stats{display:flex;gap:3rem;margin-top:4rem;padding:2rem 0;border-top:1px solid var(--border);animation:fiu .6s ease-out .4s both}
-.stat-v{font-family:var(--fd);font-size:2rem;font-weight:700;color:var(--em-b);text-align:center}
-.stat-l{font-size:.78rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em;text-align:center}
-
-/* FEATURES */
-.feat{padding:5rem 2rem;max-width:1100px;margin:0 auto}
-.feat-h{text-align:center;margin-bottom:3rem}
-.feat-h h2{font-family:var(--fd);font-size:2rem;font-weight:700;margin-bottom:.5rem}
-.feat-h p{color:var(--text-2);max-width:500px;margin:0 auto}
-.feat-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
-.fc{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:var(--tr);position:relative;overflow:hidden}
-.fc:hover{border-color:var(--em);transform:translateY(-4px);box-shadow:0 2px 16px rgba(0,0,0,.3)}
-.fc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--em-b),transparent);opacity:0;transition:var(--tr)}
-.fc:hover::before{opacity:1}
-.fc-i{width:44px;height:44px;border-radius:var(--rad);background:var(--r-safe-bg);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:1.3rem}
-.fc h3{font-size:1.05rem;font-weight:600;margin-bottom:.5rem}
-.fc p{font-size:.88rem;color:var(--text-2);line-height:1.6}
-
-/* DRUG GRID (landing) */
-.dg-sec{padding:4rem 2rem;max-width:1100px;margin:0 auto}
-.dg-sec h2{font-family:var(--fd);font-size:1.8rem;font-weight:700;text-align:center;margin-bottom:2rem}
-.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}
-.dc{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:1.2rem 1rem;text-align:center;transition:var(--tr)}
-.dc:hover{border-color:var(--em)}
-.dc-n{font-weight:600;font-size:.92rem;margin-bottom:4px}
-.dc-g{font-size:.75rem;color:var(--em-b);font-family:var(--fm)}
-.dc-c{font-size:.72rem;color:var(--text-3);margin-top:2px}
-
-/* ANALYZE PAGE */
-.an-pg{max-width:860px;margin:0 auto;padding:3rem 2rem}
-.pg-hd{margin-bottom:2.5rem}
-.pg-hd h1{font-family:var(--fd);font-size:2rem;font-weight:700;margin-bottom:.5rem}
-.pg-hd p{color:var(--text-2);font-size:.95rem}
-.steps{display:flex;margin-bottom:2.5rem;background:var(--bg-card);border-radius:16px;border:1px solid var(--border);overflow:hidden}
-.stp{flex:1;padding:1rem 1.5rem;display:flex;align-items:center;gap:12px;border-right:1px solid var(--border);transition:var(--tr)}
-.stp:last-child{border-right:0}
-.stp.act{background:rgba(45,106,79,.08)}
-.stp.done{background:rgba(45,106,79,.05)}
-.stp-n{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:600;background:var(--bg-elevated);border:1px solid var(--border);transition:var(--tr);flex-shrink:0}
-.stp.act .stp-n{background:var(--em);border-color:var(--em);color:#fff}
-.stp.done .stp-n{background:var(--em-b);border-color:var(--em-b);color:#fff}
-.stp-t{font-size:.82rem;font-weight:500}
-.stp-t small{display:block;color:var(--text-3);font-size:.72rem;font-weight:400}
-
-/* UPLOAD */
-.uz{border:2px dashed var(--border);border-radius:16px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:var(--tr);margin-bottom:2rem;position:relative;overflow:hidden;background:var(--bg-card)}
-.uz:hover,.uz.drag{border-color:var(--em-b);background:rgba(45,106,79,.06)}
-.uz.has{border-color:var(--em);border-style:solid;background:var(--r-safe-bg)}
-.uz.err{border-color:var(--r-tox);background:var(--r-tox-bg)}
-.uz-icon{font-size:2.5rem;margin-bottom:1rem;opacity:.6}
-.uz h3{font-size:1rem;font-weight:600;margin-bottom:.5rem}
-.uz p{font-size:.82rem;color:var(--text-3)}
-.uz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
-.fi{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:.8rem}
-.fi-n{font-family:var(--fm);font-size:.85rem;color:var(--em-b);font-weight:500}
-.fi-s{font-size:.75rem;color:var(--text-3)}
-.fi-x{background:rgba(192,57,43,.15);border:0;color:var(--r-tox);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;transition:var(--tr)}
-.fi-x:hover{background:rgba(192,57,43,.3)}
-
-/* DRUG SELECT */
-.ds{margin-bottom:2rem}
-.ds label{display:block;font-weight:600;font-size:.88rem;margin-bottom:.8rem}
-.ds label span{color:var(--text-3);font-weight:400;font-size:.78rem}
-.dp{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem}
-.pill{padding:8px 16px;border-radius:999px;font-size:.82rem;font-weight:500;cursor:pointer;transition:var(--tr);background:var(--bg-card);border:1px solid var(--border);color:var(--text-2);user-select:none}
-.pill:hover{border-color:var(--text-3);color:var(--text-1)}
-.pill.sel{background:rgba(45,106,79,.15);border-color:var(--em-b);color:var(--em-b)}
-.di-row{display:flex;gap:10px}
-.di{flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:12px 16px;color:var(--text-1);font-family:var(--fb);font-size:.88rem;transition:var(--tr);outline:0}
-.di:focus{border-color:var(--em-b)}
-.di::placeholder{color:var(--text-3)}
-.an-act{display:flex;gap:12px;align-items:center;margin-top:1rem}
-.btn-an{flex:none;padding:14px 36px}
-.btn-an:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-
-/* LOADING */
-.lo{display:none;position:fixed;inset:0;z-index:200;background:rgba(8,11,16,.88);backdrop-filter:blur(8px);flex-direction:column;align-items:center;justify-content:center;gap:1.5rem}
-.lo.active{display:flex}
-.dna-l{width:60px;height:60px;position:relative}
-.dna-l::before,.dna-l::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;top:50%;left:50%}
-.dna-l::before{background:var(--em-b);animation:do 1.2s linear infinite}
-.dna-l::after{background:var(--gold);animation:do 1.2s linear infinite .6s}
-@keyframes do{0%{transform:translate(-50%,-50%) rotate(0) translateX(20px)}100%{transform:translate(-50%,-50%) rotate(360deg) translateX(20px)}}
-.lo-t{color:var(--text-2);font-size:.95rem}
-.lo-s{color:var(--text-3);font-size:.78rem}
-
-/* RESULTS */
-.rs-pg{max-width:960px;margin:0 auto;padding:3rem 2rem}
-.rs-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
-.rs-hd h1{font-family:var(--fd);font-size:1.8rem;font-weight:700}
-.rs-act{display:flex;gap:8px}
-.rc{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;margin-bottom:1.5rem;overflow:hidden;transition:var(--tr)}
-.rc:hover{border-color:rgba(255,255,255,.08)}
-.rb{padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
-.rb.safe{background:var(--r-safe-bg);border-bottom:1px solid rgba(45,106,79,.2)}
-.rb.adjust{background:var(--r-adj-bg);border-bottom:1px solid rgba(212,160,83,.2)}
-.rb.toxic{background:var(--r-tox-bg);border-bottom:1px solid rgba(192,57,43,.2)}
-.rb.ineffective{background:var(--r-ineff-bg);border-bottom:1px solid rgba(231,76,60,.2)}
-.rb.unknown{background:var(--r-unk-bg);border-bottom:1px solid rgba(108,117,125,.2)}
-.rl{display:flex;align-items:center;gap:16px}
-.r-drug{font-family:var(--fd);font-size:1.4rem;font-weight:700}
-.r-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.r-badge.safe{background:var(--r-safe);color:#fff}
-.r-badge.adjust{background:var(--r-adj);color:#1a1a1a}
-.r-badge.toxic{background:var(--r-tox);color:#fff}
-.r-badge.ineffective{background:var(--r-ineff);color:#fff}
-.r-badge.unknown{background:var(--r-unk);color:#fff}
-.rm{display:flex;gap:1.5rem;font-size:.8rem;color:var(--text-2);flex-wrap:wrap}
-.cs{border-bottom:1px solid var(--border)}.cs:last-child{border-bottom:0}
-.st{width:100%;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;background:0;border:0;color:var(--text-1);cursor:pointer;font-family:var(--fb);font-size:.9rem;font-weight:600;text-align:left;transition:var(--tr)}
-.st:hover{background:rgba(255,255,255,.02)}
-.st .chv{transition:var(--tr);color:var(--text-3);font-size:.75rem}
-.st.open .chv{transform:rotate(180deg)}
-.sc{display:none;padding:0 1.5rem 1.2rem}.sc.open{display:block}
-.pg{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
-.pi{background:var(--bg-elevated);border-radius:6px;padding:.8rem 1rem}
-.pi-l{font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
-.pi-v{font-size:.92rem;font-weight:600}
-.pi-v.mono{font-family:var(--fm);color:var(--em-b)}
-.vt{width:100%;border-collapse:collapse;font-size:.82rem}
-.vt th{text-align:left;padding:8px 10px;font-size:.7rem;color:var(--text-3);text-transform:uppercase;border-bottom:1px solid var(--border);font-weight:500}
-.vt td{padding:8px 10px;border-bottom:1px solid rgba(30,42,58,.5)}
-.vt tr:last-child td{border-bottom:0}
-.vt .rsid{font-family:var(--fm);color:var(--gold);font-weight:500}
-.vt .star{font-family:var(--fm);color:var(--em-b)}
-.et{display:inline-block;padding:2px 8px;border-radius:6px;font-size:.72rem;font-weight:500}
-.et.no_function{background:var(--r-tox-bg);color:#e8a49c}
-.et.decreased_function{background:var(--r-adj-bg);color:var(--gold)}
-.et.normal{background:var(--r-safe-bg);color:var(--em-b)}
-.et.increased_function{background:rgba(52,152,219,.12);color:#5dade2}
-.et.unknown{background:var(--r-unk-bg);color:var(--text-3)}
-.rd{background:var(--bg-elevated);border-radius:var(--rad);padding:1rem;margin-bottom:1rem;line-height:1.6;font-size:.88rem}
-.rr{display:flex;gap:1rem;margin-bottom:.8rem;flex-wrap:wrap}
-.rr-l{font-size:.72rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;min-width:100px;padding-top:2px;font-weight:500}
-.rr-chips{display:flex;flex-wrap:wrap;gap:6px}
-.rr-c{background:var(--bg-card);border:1px solid var(--border);border-radius:999px;padding:3px 12px;font-size:.78rem}
-.ut{display:inline-flex;padding:3px 10px;border-radius:6px;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
-.ut.emergent{background:var(--r-tox-bg);color:var(--r-tox)}
-.ut.urgent{background:var(--r-adj-bg);color:var(--gold)}
-.ut.soon{background:rgba(52,152,219,.12);color:#5dade2}
-.ut.routine{background:var(--r-safe-bg);color:var(--em-b)}
-.llm p{font-size:.88rem;line-height:1.7;margin-bottom:1rem;color:var(--text-2)}
-.llm strong{color:var(--text-1);font-weight:600}
-.llm-tag{display:inline-flex;font-size:.7rem;color:var(--text-3);font-family:var(--fm);background:var(--bg-elevated);padding:3px 10px;border-radius:6px;margin-top:.5rem}
-.jv{background:var(--bg-deep);border:1px solid var(--border);border-radius:var(--rad);margin-top:1rem}
-.jv-bar{display:flex;justify-content:flex-end;gap:6px;padding:8px 12px;border-bottom:1px solid var(--border)}
-.jv-btn{background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-2);padding:4px 12px;border-radius:6px;font-size:.72rem;cursor:pointer;font-family:var(--fb);transition:var(--tr)}
-.jv-btn:hover{color:var(--text-1);border-color:var(--text-3)}
-.jv-btn.copied{background:var(--r-safe-bg);color:var(--em-b);border-color:var(--em)}
-.jv-pre{padding:1rem;overflow:auto;font-family:var(--fm);font-size:.75rem;line-height:1.6;color:var(--text-2);max-height:500px}
-
-/* ABOUT */
-.ab-pg{max-width:800px;margin:0 auto;padding:3rem 2rem}
-.ab-pg h1{font-family:var(--fd);font-size:2rem;font-weight:700;margin-bottom:.5rem}
-.ab-pg>p{color:var(--text-2);margin-bottom:2rem}
-.ac{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1.5rem}
-.ac h2{font-family:var(--fd);font-size:1.2rem;font-weight:600;margin-bottom:1rem;color:var(--em-b)}
-.ac p,.ac li{font-size:.88rem;color:var(--text-2);line-height:1.7}
-.ac ul{padding-left:1.2rem;margin-top:.5rem}
-.ac li{margin-bottom:.4rem}
-.ts{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
-.ti{background:var(--bg-elevated);border-radius:6px;padding:.8rem 1rem}
-.ti-l{font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em}
-.ti-v{font-size:.88rem;font-weight:500;margin-top:2px}
-.footer{text-align:center;padding:2rem;font-size:.75rem;color:var(--text-3);border-top:1px solid var(--border);margin-top:4rem}
-
-/* DASHBOARD */
-.dash-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.2rem 1.5rem;margin-bottom:.8rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:var(--tr);cursor:pointer;flex-wrap:wrap}
-.dash-card:hover{border-color:rgba(255,255,255,.08);transform:translateY(-1px)}
-.dash-left{display:flex;align-items:center;gap:1rem;flex:1;min-width:0}
-.dash-drug{font-family:var(--fd);font-size:1.1rem;font-weight:700;white-space:nowrap}
-.dash-meta{font-size:.78rem;color:var(--text-3)}
-.dash-right{display:flex;align-items:center;gap:.8rem}
-.dash-del{background:0;border:0;color:var(--text-3);cursor:pointer;font-size:.9rem;padding:4px 8px;border-radius:6px;transition:var(--tr)}
-.dash-del:hover{color:var(--r-tox);background:var(--r-tox-bg)}
-
-@keyframes fiu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.fin{animation:fiu .4s ease-out both}
-@media(max-width:768px){.nav{padding:0 1rem}.nav-link{padding:6px 10px;font-size:.8rem}.login-wrap{flex-direction:column;text-align:center}.login-left{margin-right:0;margin-bottom:2rem}.login-stats{justify-content:center}.hero h1{font-size:2rem}.stats{gap:1.5rem}.stat-v{font-size:1.4rem}.steps{flex-direction:column}.stp{border-right:0;border-bottom:1px solid var(--border)}.pg{grid-template-columns:1fr}.rb{flex-direction:column;align-items:flex-start}.ts{grid-template-columns:1fr}.di-row{flex-direction:column}.rm{flex-wrap:wrap;gap:.5rem}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PharmaGuard AI — Pharmacogenomic Risk Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<div class="bg-mesh"></div>
+<!-- SVG ICON DEFS (used throughout via <use>) -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<symbol id="i-dna" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 15c6.667-6 13.333 0 20-6"/><path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"/><path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"/><path d="M17 6l-2.5-2.5"/><path d="M14 8l-1-1"/><path d="M7 18l2.5 2.5"/><path d="M3.5 14.5l.5.5"/><path d="M20 9l.5.5"/><path d="M6.5 12.5l1 1"/><path d="M16.5 10l1 1"/><path d="M10 16l1.5 1.5"/></symbol>
+<symbol id="i-upload" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></symbol>
+<symbol id="i-pill" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></symbol>
+<symbol id="i-brain" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/><path d="M3.477 10.896a4 4 0 0 1 .585-.396"/><path d="M19.938 10.5a4 4 0 0 1 .585.396"/><path d="M6 18a4 4 0 0 1-1.967-.516"/><path d="M19.967 17.484A4 4 0 0 1 18 18"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></symbol>
+<symbol id="i-activity" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+<symbol id="i-logout" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></symbol>
+<symbol id="i-arrow-left" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></symbol>
+<symbol id="i-chevron-down" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></symbol>
+<symbol id="i-zap" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></symbol>
+<symbol id="i-clipboard" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></symbol>
+</defs>
+</svg>
 
-<!-- ═══ NAV (only visible after login) ═══ -->
+<!-- NAV (post-login only) -->
 <nav class="nav" id="main-nav">
-  <a class="nav-brand" onclick="navigate('home')">
-    <svg viewBox="0 0 32 32" fill="none"><path d="M16 2L4 8v16l12 6 12-6V8L16 2z" stroke="#40916c" stroke-width="1.5" fill="rgba(45,106,79,.1)"/><path d="M10 12s2 4 6 4 6-4 6-4" stroke="#40916c" stroke-width="1.5" stroke-linecap="round"/><path d="M10 18s2 4 6 4 6-4 6-4" stroke="#d4a053" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="1.5" fill="#40916c"/><circle cx="20" cy="12" r="1.5" fill="#40916c"/><circle cx="14" cy="18" r="1.5" fill="#d4a053"/><circle cx="18" cy="18" r="1.5" fill="#d4a053"/></svg>
-    <span class="nav-brand-text">Pharma<span>Guard</span> AI</span>
+  <a class="nb" onclick="navigate('home')">
+    <svg viewBox="0 0 32 32" fill="none"><path d="M16 2L4 8v16l12 6 12-6V8L16 2z" stroke="#1b6b4a" stroke-width="1.5" fill="rgba(27,107,74,.06)"/><path d="M10 12s2 4 6 4 6-4 6-4" stroke="#1b6b4a" stroke-width="1.5" stroke-linecap="round"/><path d="M10 18s2 4 6 4 6-4 6-4" stroke="#9a7b2e" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="1.5" fill="#1b6b4a"/><circle cx="20" cy="12" r="1.5" fill="#1b6b4a"/><circle cx="14" cy="18" r="1.5" fill="#9a7b2e"/><circle cx="18" cy="18" r="1.5" fill="#9a7b2e"/></svg>
+    <span>Pharma<b>Guard</b> AI</span>
   </a>
-  <div class="nav-links">
-    <button class="nav-link active" data-page="home">Home</button>
-    <button class="nav-link" data-page="analyze">Analyze</button>
-    <button class="nav-link" data-page="results" id="nav-results" style="display:none">Results</button>
-    <button class="nav-link" data-page="dashboard">Dashboard</button>
-    <button class="nav-link" data-page="about">About</button>
-    <span class="user-tag" id="user-tag"></span>
-    <button class="nav-logout" id="nav-logout" onclick="doLogout()">Logout</button>
+  <div class="nl">
+    <button class="nlk active" data-page="home"><svg class="ic" style="width:15px;height:15px"><use href="#i-home"/></svg>Home</button>
+    <button class="nlk" data-page="analyze"><svg class="ic" style="width:15px;height:15px"><use href="#i-file"/></svg>Analyze</button>
+    <button class="nlk" data-page="results" id="nav-results" style="display:none"><svg class="ic" style="width:15px;height:15px"><use href="#i-activity"/></svg>Results</button>
+    <button class="nlk" data-page="dashboard"><svg class="ic" style="width:15px;height:15px"><use href="#i-grid"/></svg>Dashboard</button>
+    <button class="nlk" data-page="about"><svg class="ic" style="width:15px;height:15px"><use href="#i-info"/></svg>About</button>
+    <span class="utag" id="user-tag"></span>
+    <button class="nlo" id="nav-logout" onclick="doLogout()"><svg class="ic" style="width:14px;height:14px"><use href="#i-logout"/></svg>Logout</button>
   </div>
 </nav>
 
 <div class="app">
 
-<!-- ═══ PAGE: LOGIN (first thing user sees, full-screen, no nav) ═══ -->
-<div class="page active" id="page-login">
-  <div class="login-wrap">
-    <div class="login-left">
-      <div class="hero-badge" style="margin-bottom:1.5rem"><div class="pulse"></div>RIFT 2026 — Pharmacogenomics</div>
-      <h1>Decode Your Genes.<br><span class="gt">Protect Your Life.</span></h1>
+<!-- ═══ LANDING (public) ═══ -->
+<div class="page active" id="page-landing">
+<div class="landing">
+  <div class="lnav">
+    <div class="nb">
+      <svg viewBox="0 0 32 32" fill="none" width="26" height="26"><path d="M16 2L4 8v16l12 6 12-6V8L16 2z" stroke="#1b6b4a" stroke-width="1.5" fill="rgba(27,107,74,.06)"/><path d="M10 12s2 4 6 4 6-4 6-4" stroke="#1b6b4a" stroke-width="1.5" stroke-linecap="round"/><path d="M10 18s2 4 6 4 6-4 6-4" stroke="#9a7b2e" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="1.5" fill="#1b6b4a"/><circle cx="20" cy="12" r="1.5" fill="#1b6b4a"/></svg>
+      <span>Pharma<b>Guard</b> AI</span>
+    </div>
+    <div class="lnav-r">
+      <button class="btn btn-ghost" onclick="navigate('auth')"><svg class="ic" style="width:16px;height:16px"><use href="#i-users"/></svg> Sign In</button>
+      <button class="btn btn-p" onclick="navigate('auth')"><svg class="ic" style="width:16px;height:16px;stroke:#fff"><use href="#i-shield"/></svg> Create Account</button>
+    </div>
+  </div>
+
+  <div class="lhero">
+    <div class="lhero-t">
+      <h1>Decode Your Genes.<br><span>Protect Your Life.</span></h1>
       <p>AI-powered pharmacogenomic risk analysis. Upload genetic data, select medications, and get CPIC-aligned clinical recommendations powered by Google Gemini — in seconds.</p>
-      <div class="login-stats">
-        <div><div class="sv">100K+</div><div class="sl">ADR Deaths/Year</div></div>
-        <div><div class="sv">34</div><div class="sl">Gene Panels</div></div>
-        <div><div class="sv">164+</div><div class="sl">CPIC Drugs</div></div>
-        <div><div class="sv">AI</div><div class="sl">Gemini Powered</div></div>
+      <div class="lbtns">
+        <button class="btn btn-p" onclick="navigate('auth')"><svg class="ic" style="width:16px;height:16px;stroke:#fff"><use href="#i-zap"/></svg> Get Started</button>
+        <button class="btn btn-s" onclick="document.getElementById('feat-sec').scrollIntoView({behavior:'smooth'})"><svg class="ic" style="width:16px;height:16px"><use href="#i-info"/></svg> Learn More</button>
       </div>
     </div>
-    <div class="login-card">
-      <h2>Clinician Portal</h2>
-      <p>Sign in to access pharmacogenomic analysis tools</p>
-      <div class="eb" id="auth-err"><span>&#9888;</span><span id="auth-err-t"></span><button class="eb-x" onclick="document.getElementById('auth-err').classList.remove('vis');document.getElementById('auth-err').classList.remove('success')">&times;</button></div>
-      <div class="form-g"><label>Email</label><input type="email" id="auth-email" placeholder="doctor@hospital.com"></div>
-      <div class="form-g"><label>Password</label><input type="password" id="auth-pw" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doLogin()"></div>
-      <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:.5rem" onclick="doLogin()">Sign In</button>
-      <div class="login-divider">or</div>
-      <button class="btn btn-s" style="width:100%;justify-content:center" onclick="doSignup()">Create Account</button>
-      <div class="login-footer">Powered by Supabase Auth &middot; HIPAA-ready RLS architecture<br>Patient data isolated per clinician via Row Level Security</div>
+    <div class="lhero-v">
+      <div class="ls"><div class="ls-ic"><svg class="ic" style="width:20px;height:20px"><use href="#i-alert"/></svg></div><div class="ls-v">100K+</div><div class="ls-l">ADR Deaths / Year</div></div>
+      <div class="ls"><div class="ls-ic"><svg class="ic" style="width:20px;height:20px"><use href="#i-dna"/></svg></div><div class="ls-v">34</div><div class="ls-l">Gene Panels</div></div>
+      <div class="ls"><div class="ls-ic"><svg class="ic" style="width:20px;height:20px"><use href="#i-pill"/></svg></div><div class="ls-v">164+</div><div class="ls-l">CPIC Drugs</div></div>
+      <div class="ls"><div class="ls-ic"><svg class="ic" style="width:20px;height:20px"><use href="#i-brain"/></svg></div><div class="ls-v">AI</div><div class="ls-l">Gemini Powered</div></div>
     </div>
   </div>
+
+  <div class="lfeat" id="feat-sec">
+    <h2>How It Works</h2>
+    <p>Three steps from genetic data to life-saving clinical insights</p>
+    <div class="lfg">
+      <div class="lfc"><div class="lfc-ic c1"><svg class="ic" style="width:20px;height:20px;stroke:#fff"><use href="#i-upload"/></svg></div><h3>1. Upload VCF File</h3><p>Upload standard VCF v4.2 genetic data. Our parser identifies pharmacogenomic variants across CYP2D6, CYP2C19, CYP2C9, SLCO1B1, TPMT, and DPYD genes.</p></div>
+      <div class="lfc"><div class="lfc-ic c2"><svg class="ic" style="width:20px;height:20px;stroke:#fff"><use href="#i-pill"/></svg></div><h3>2. Select Medications</h3><p>Choose from 6 high-risk drugs or enter custom names. Multi-drug analysis runs simultaneously for comprehensive profiling.</p></div>
+      <div class="lfc"><div class="lfc-ic c3"><svg class="ic" style="width:20px;height:20px;stroke:#fff"><use href="#i-brain"/></svg></div><h3>3. AI Risk Analysis</h3><p>Receive color-coded risk assessments, CPIC-aligned dosing recommendations, and Gemini AI-generated clinical explanations.</p></div>
+    </div>
+  </div>
+
+  <div class="ldrugs">
+    <h2>Supported Medications</h2>
+    <div class="ldg">
+      <div class="ldc"><div class="ldc-n">Codeine</div><div class="ldc-g">CYP2D6</div><div class="ldc-t">Opioid analgesic</div></div>
+      <div class="ldc"><div class="ldc-n">Warfarin</div><div class="ldc-g">CYP2C9</div><div class="ldc-t">Anticoagulant</div></div>
+      <div class="ldc"><div class="ldc-n">Clopidogrel</div><div class="ldc-g">CYP2C19</div><div class="ldc-t">Antiplatelet</div></div>
+      <div class="ldc"><div class="ldc-n">Simvastatin</div><div class="ldc-g">SLCO1B1</div><div class="ldc-t">Statin</div></div>
+      <div class="ldc"><div class="ldc-n">Azathioprine</div><div class="ldc-g">TPMT</div><div class="ldc-t">Immunosuppressant</div></div>
+      <div class="ldc"><div class="ldc-n">Fluorouracil</div><div class="ldc-g">DPYD</div><div class="ldc-t">Antineoplastic</div></div>
+    </div>
+  </div>
+  <div class="lfoot">PharmaGuard AI &mdash; RIFT 2026 Hackathon &mdash; For research and educational purposes only.</div>
+</div>
 </div>
 
-<!-- ═══ PAGE: HOME (post-login landing with features) ═══ -->
+<!-- ═══ AUTH PAGE ═══ -->
+<div class="page" id="page-auth">
+<div class="auth-w">
+  <div class="auth-c">
+    <button class="auth-bk" onclick="navigate('landing')"><svg class="ic" style="width:15px;height:15px"><use href="#i-arrow-left"/></svg> Back to home</button>
+    <div class="auth-logo">
+      <svg viewBox="0 0 32 32" fill="none"><path d="M16 2L4 8v16l12 6 12-6V8L16 2z" stroke="#1b6b4a" stroke-width="1.5" fill="rgba(27,107,74,.06)"/><path d="M10 12s2 4 6 4 6-4 6-4" stroke="#1b6b4a" stroke-width="1.5" stroke-linecap="round"/><path d="M10 18s2 4 6 4 6-4 6-4" stroke="#9a7b2e" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span>Pharma<b>Guard</b> AI</span>
+    </div>
+    <h2>Clinician Portal</h2>
+    <p>Sign in or create an account to access analysis tools</p>
+    <div class="eb" id="auth-err"><svg class="ic" style="width:15px;height:15px;flex-shrink:0"><use href="#i-alert"/></svg><span id="auth-err-t"></span><button class="eb-x" onclick="document.getElementById('auth-err').classList.remove('vis','success')">&times;</button></div>
+    <div class="fg"><label>Email</label><input type="email" id="auth-email" placeholder="doctor@hospital.com"></div>
+    <div class="fg"><label>Password</label><input type="password" id="auth-pw" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:.4rem" onclick="doLogin()"><svg class="ic" style="width:16px;height:16px;stroke:#fff"><use href="#i-shield"/></svg> Sign In</button>
+    <div class="auth-div">or</div>
+    <button class="btn btn-s" style="width:100%;justify-content:center" onclick="doSignup()"><svg class="ic" style="width:16px;height:16px"><use href="#i-users"/></svg> Create Account</button>
+    <div class="auth-ft">Powered by Supabase Auth &middot; HIPAA-ready RLS architecture<br>Patient data isolated per clinician via Row Level Security</div>
+  </div>
+</div>
+</div>
+
+<!-- ═══ HOME (post-login) ═══ -->
 <div class="page has-nav" id="page-home">
-  <div class="hero">
-    <div class="hero-badge"><div class="pulse"></div>Welcome back, Clinician</div>
-    <h1>Pharmacogenomic<br><span class="gt">Risk Analysis</span></h1>
-    <p class="hero-sub">Upload VCF genetic data, select drugs, and receive AI-powered risk predictions with CPIC-aligned clinical recommendations.</p>
-    <div class="hero-act">
-      <button class="btn btn-p" onclick="navigate('analyze')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>New Analysis</button>
-      <button class="btn btn-s" onclick="navigate('dashboard')">&#x1F4CB; View Dashboard</button>
-      <button class="btn btn-s" onclick="navigate('about')">Learn More</button>
-    </div>
-    <div class="stats">
-      <div><div class="stat-v">100K+</div><div class="stat-l">Annual ADR Deaths</div></div>
-      <div><div class="stat-v">34</div><div class="stat-l">Gene Panels</div></div>
-      <div><div class="stat-v">164+</div><div class="stat-l">CPIC Drugs</div></div>
-      <div><div class="stat-v">AI</div><div class="stat-l">Gemini Powered</div></div>
+  <div class="home-h">
+    <h1>Welcome back, <span id="home-user" style="color:var(--em)">Clinician</span></h1>
+    <p>Upload VCF genetic data, select drugs, and receive AI-powered risk predictions with CPIC-aligned clinical recommendations.</p>
+    <div class="home-acts">
+      <button class="btn btn-p" onclick="navigate('analyze')"><svg class="ic" style="width:16px;height:16px;stroke:#fff"><use href="#i-upload"/></svg> New Analysis</button>
+      <button class="btn btn-s" onclick="navigate('dashboard')"><svg class="ic" style="width:16px;height:16px"><use href="#i-grid"/></svg> View Dashboard</button>
+      <button class="btn btn-s" onclick="navigate('about')"><svg class="ic" style="width:16px;height:16px"><use href="#i-info"/></svg> Learn More</button>
     </div>
   </div>
-  <div class="feat">
-    <div class="feat-h"><h2>How It Works</h2><p>Three steps from genetic data to life-saving clinical insights</p></div>
-    <div class="feat-g">
-      <div class="fc"><div class="fc-i">&#x1F9EC;</div><h3>1. Upload VCF File</h3><p>Upload standard VCF v4.2 genetic data. Our parser identifies pharmacogenomic variants across CYP2D6, CYP2C19, CYP2C9, SLCO1B1, TPMT, and DPYD genes.</p></div>
-      <div class="fc"><div class="fc-i">&#x1F48A;</div><h3>2. Select Medications</h3><p>Choose from 6 high-risk drugs or enter custom names. Multi-drug analysis runs simultaneously for comprehensive profiling.</p></div>
-      <div class="fc"><div class="fc-i">&#x1F916;</div><h3>3. AI Risk Analysis</h3><p>Receive color-coded risk assessments, CPIC-aligned dosing recommendations, and Gemini AI-generated clinical explanations with variant-level detail.</p></div>
-    </div>
+  <div class="home-g">
+    <div class="hgc"><div class="hgc-ic"><svg class="ic" style="width:20px;height:20px"><use href="#i-upload"/></svg></div><h3>1. Upload VCF File</h3><p>Upload standard VCF v4.2 genetic data. Identifies pharmacogenomic variants across 6 critical genes.</p></div>
+    <div class="hgc"><div class="hgc-ic"><svg class="ic" style="width:20px;height:20px"><use href="#i-pill"/></svg></div><h3>2. Select Medications</h3><p>Choose from 6 high-risk drugs or enter custom names. Multi-drug simultaneous analysis.</p></div>
+    <div class="hgc"><div class="hgc-ic"><svg class="ic" style="width:20px;height:20px"><use href="#i-brain"/></svg></div><h3>3. AI Risk Analysis</h3><p>Color-coded risk assessments, CPIC-aligned dosing, and Gemini AI clinical explanations.</p></div>
   </div>
-  <div class="dg-sec">
+  <div class="home-dr">
     <h2>Supported Medications</h2>
-    <div class="dg">
-      <div class="dc"><div class="dc-n">Codeine</div><div class="dc-g">CYP2D6</div><div class="dc-c">Opioid analgesic</div></div>
-      <div class="dc"><div class="dc-n">Warfarin</div><div class="dc-g">CYP2C9</div><div class="dc-c">Anticoagulant</div></div>
-      <div class="dc"><div class="dc-n">Clopidogrel</div><div class="dc-g">CYP2C19</div><div class="dc-c">Antiplatelet</div></div>
-      <div class="dc"><div class="dc-n">Simvastatin</div><div class="dc-g">SLCO1B1</div><div class="dc-c">Statin</div></div>
-      <div class="dc"><div class="dc-n">Azathioprine</div><div class="dc-g">TPMT</div><div class="dc-c">Immunosuppressant</div></div>
-      <div class="dc"><div class="dc-n">Fluorouracil</div><div class="dc-g">DPYD</div><div class="dc-c">Antineoplastic</div></div>
+    <div class="ldg">
+      <div class="ldc"><div class="ldc-n">Codeine</div><div class="ldc-g">CYP2D6</div><div class="ldc-t">Opioid analgesic</div></div>
+      <div class="ldc"><div class="ldc-n">Warfarin</div><div class="ldc-g">CYP2C9</div><div class="ldc-t">Anticoagulant</div></div>
+      <div class="ldc"><div class="ldc-n">Clopidogrel</div><div class="ldc-g">CYP2C19</div><div class="ldc-t">Antiplatelet</div></div>
+      <div class="ldc"><div class="ldc-n">Simvastatin</div><div class="ldc-g">SLCO1B1</div><div class="ldc-t">Statin</div></div>
+      <div class="ldc"><div class="ldc-n">Azathioprine</div><div class="ldc-g">TPMT</div><div class="ldc-t">Immunosuppressant</div></div>
+      <div class="ldc"><div class="ldc-n">Fluorouracil</div><div class="ldc-g">DPYD</div><div class="ldc-t">Antineoplastic</div></div>
     </div>
   </div>
   <div class="footer">PharmaGuard AI &mdash; RIFT 2026 Hackathon &mdash; For research and educational purposes only.</div>
 </div>
 
-<!-- ═══ PAGE: ANALYZE ═══ -->
+<!-- ═══ ANALYZE ═══ -->
 <div class="page has-nav" id="page-analyze">
   <div class="an-pg">
     <div class="pg-hd"><h1>Analyze Genetic Data</h1><p>Upload a VCF file and select drugs to generate pharmacogenomic risk predictions.</p></div>
     <div class="steps">
-      <div class="stp act" id="step-1"><div class="stp-n">1</div><div class="stp-t">Upload VCF<small>Drag & drop or browse</small></div></div>
+      <div class="stp act" id="step-1"><div class="stp-n">1</div><div class="stp-t">Upload VCF<small>Drag &amp; drop or browse</small></div></div>
       <div class="stp" id="step-2"><div class="stp-n">2</div><div class="stp-t">Select Drugs<small>Choose medications</small></div></div>
       <div class="stp" id="step-3"><div class="stp-n">3</div><div class="stp-t">Get Results<small>AI-powered analysis</small></div></div>
     </div>
-    <div class="eb" id="eb"><span>&#9888;</span><span id="eb-t"></span><button class="eb-x" onclick="hideErr()">&times;</button></div>
+    <div class="eb" id="eb"><svg class="ic" style="width:15px;height:15px;flex-shrink:0"><use href="#i-alert"/></svg><span id="eb-t"></span><button class="eb-x" onclick="hideErr()">&times;</button></div>
     <div class="uz" id="uz">
-      <div id="uz-p"><div class="uz-icon">&#x1F4C1;</div><h3>Drop your VCF file here</h3><p>or click to browse &middot; Supports .vcf files up to 5 MB</p></div>
-      <div id="uz-ok" style="display:none"><div class="uz-icon">&#x2705;</div><h3>File loaded successfully</h3><div class="fi"><span class="fi-n" id="fn"></span><span class="fi-s" id="fs"></span><button class="fi-x" onclick="rmFile(event)">&times;</button></div></div>
+      <div id="uz-p"><div class="uz-icon"><svg class="ic" style="width:36px;height:36px"><use href="#i-upload"/></svg></div><h3>Drop your VCF file here</h3><p>or click to browse &middot; Supports .vcf files up to 5 MB</p></div>
+      <div id="uz-ok" style="display:none"><div class="uz-icon"><svg class="ic" style="width:36px;height:36px;color:var(--em)"><use href="#i-check"/></svg></div><h3>File loaded successfully</h3><div class="fi"><span class="fi-n" id="fn"></span><span class="fi-s" id="fs"></span><button class="fi-x" onclick="rmFile(event)"><svg class="ic" style="width:12px;height:12px"><use href="#i-x"/></svg></button></div></div>
       <input type="file" accept=".vcf" id="finp">
-      <div style="font-size:.72rem;color:var(--text-3);margin-top:.5rem">Maximum file size: 5 MB &middot; VCF v4.x format</div>
+      <div style="font-size:.7rem;color:var(--text-3);margin-top:.4rem">Maximum file size: 5 MB &middot; VCF v4.x format</div>
     </div>
     <div class="ds">
       <label>Select Drugs <span>(click to toggle, or type below)</span></label>
@@ -386,22 +198,22 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
       </div>
     </div>
     <div class="an-act">
-      <button class="btn btn-p btn-an" id="abtn" onclick="runAnalysis()" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>Run Analysis</button>
-      <span id="astat" style="font-size:.82rem;color:var(--text-3)"></span>
+      <button class="btn btn-p btn-an" id="abtn" onclick="runAnalysis()" disabled><svg class="ic" style="width:16px;height:16px;stroke:#fff"><use href="#i-activity"/></svg> Run Analysis</button>
+      <span id="astat" style="font-size:.8rem;color:var(--text-3)"></span>
     </div>
   </div>
   <div class="footer">PharmaGuard AI &mdash; RIFT 2026 Hackathon</div>
 </div>
 
-<!-- ═══ PAGE: RESULTS ═══ -->
+<!-- ═══ RESULTS ═══ -->
 <div class="page has-nav" id="page-results">
   <div class="rs-pg">
     <div class="rs-hd">
-      <div><h1>Analysis Results</h1><p style="color:var(--text-2);font-size:.88rem" id="rs-sub"></p></div>
+      <div><h1>Analysis Results</h1><p style="color:var(--text-2);font-size:.84rem" id="rs-sub"></p></div>
       <div class="rs-act">
-        <button class="btn btn-s btn-sm" onclick="navigate('analyze')">&#x21BB; New Analysis</button>
-        <button class="btn btn-s btn-sm" onclick="dlAll()">&#x2B73; Download JSON</button>
-        <button class="btn btn-s btn-sm" onclick="cpAll()">&#x1F4CB; Copy JSON</button>
+        <button class="btn btn-s btn-sm" onclick="navigate('analyze')"><svg class="ic" style="width:14px;height:14px"><use href="#i-file"/></svg> New Analysis</button>
+        <button class="btn btn-s btn-sm" onclick="dlAll()"><svg class="ic" style="width:14px;height:14px"><use href="#i-code"/></svg> Download JSON</button>
+        <button class="btn btn-s btn-sm" onclick="cpAll()"><svg class="ic" style="width:14px;height:14px"><use href="#i-clipboard"/></svg> Copy JSON</button>
       </div>
     </div>
     <div id="rcon"></div>
@@ -409,17 +221,23 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
   <div class="footer">PharmaGuard AI &mdash; RIFT 2026 Hackathon</div>
 </div>
 
-<!-- ═══ PAGE: DASHBOARD ═══ -->
+<!-- ═══ DASHBOARD ═══ -->
 <div class="page has-nav" id="page-dashboard">
-  <div class="rs-pg">
-    <div class="rs-hd">
-      <div><h1>Patient Dashboard</h1><p style="color:var(--text-2);font-size:.88rem" id="dash-sub">Your saved pharmacogenomic reports</p></div>
-      <div class="rs-act"><button class="btn btn-p btn-sm" onclick="navigate('analyze')">+ New Analysis</button></div>
+  <div class="dash-pg">
+    <div class="dash-hd">
+      <div><h1>Patient Dashboard</h1><p id="dash-sub">Your saved pharmacogenomic reports</p></div>
+      <button class="btn btn-p btn-sm" onclick="navigate('analyze')"><svg class="ic" style="width:14px;height:14px;stroke:#fff"><use href="#i-file"/></svg> New Analysis</button>
     </div>
-    <div id="dash-loading" style="text-align:center;padding:3rem;color:var(--text-3)">Loading reports...</div>
+    <div class="dash-stats" id="dash-stats-row">
+      <div class="dsc"><div class="dsc-v" id="ds-total">0</div><div class="dsc-l">Total Reports</div></div>
+      <div class="dsc"><div class="dsc-v" id="ds-safe" style="color:var(--r-safe)">0</div><div class="dsc-l">Safe</div></div>
+      <div class="dsc"><div class="dsc-v" id="ds-adj" style="color:var(--r-adj)">0</div><div class="dsc-l">Adjust Dosage</div></div>
+      <div class="dsc"><div class="dsc-v" id="ds-tox" style="color:var(--r-tox)">0</div><div class="dsc-l">Toxic / Ineffective</div></div>
+    </div>
+    <div id="dash-loading" style="text-align:center;padding:2.5rem;color:var(--text-3)">Loading reports...</div>
     <div id="dash-empty" style="display:none;text-align:center;padding:3rem">
-      <div style="font-size:2rem;margin-bottom:1rem;opacity:.4">&#x1F4CB;</div>
-      <p style="color:var(--text-3)">No reports yet. Run your first analysis to get started.</p>
+      <svg class="ic" style="width:40px;height:40px;color:var(--text-3);margin-bottom:.8rem;opacity:.4"><use href="#i-clipboard"/></svg>
+      <p style="color:var(--text-3);font-size:.88rem">No reports yet. Run your first analysis to get started.</p>
       <button class="btn btn-p btn-sm" style="margin-top:1rem" onclick="navigate('analyze')">Start Analysis</button>
     </div>
     <div id="dash-list"></div>
@@ -427,32 +245,34 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
   <div class="footer">PharmaGuard AI &mdash; RIFT 2026 Hackathon</div>
 </div>
 
-<!-- ═══ PAGE: ABOUT ═══ -->
+<!-- ═══ ABOUT ═══ -->
 <div class="page has-nav" id="page-about">
   <div class="ab-pg">
     <h1>About PharmaGuard AI</h1>
     <p>AI-powered pharmacogenomic risk analysis for safer prescribing.</p>
-    <div class="ac"><h2>The Problem</h2><p>Adverse drug reactions (ADRs) kill over 100,000 Americans each year. Many are preventable through pharmacogenomic testing — analyzing how genetic makeup affects drug response.</p></div>
-    <div class="ac"><h2>Our Solution</h2><p>PharmaGuard AI analyzes VCF files to identify variants across 6 critical genes, predicts drug-specific risks, and generates AI-powered clinical explanations using Google Gemini. Predictions align with CPIC guidelines.</p></div>
-    <div class="ac"><h2>Architecture</h2>
-      <div class="ts">
-        <div class="ti"><div class="ti-l">Frontend</div><div class="ti-v">Vanilla JS SPA</div></div>
-        <div class="ti"><div class="ti-l">Backend</div><div class="ti-v">Python FastAPI</div></div>
-        <div class="ti"><div class="ti-l">AI Engine</div><div class="ti-v">Google Gemini 2.0 Flash</div></div>
-        <div class="ti"><div class="ti-l">VCF Parsing</div><div class="ti-v">Custom Python Parser</div></div>
-        <div class="ti"><div class="ti-l">Risk Engine</div><div class="ti-v">CPIC API + Supabase</div></div>
-        <div class="ti"><div class="ti-l">Deployment</div><div class="ti-v">Render / Vercel</div></div>
+    <div class="ab-grid">
+      <div class="ac"><h2><svg class="ic" style="width:18px;height:18px"><use href="#i-alert"/></svg> The Problem</h2><p>Adverse drug reactions (ADRs) kill over 100,000 Americans each year. Many are preventable through pharmacogenomic testing — analyzing how genetic makeup affects drug response.</p></div>
+      <div class="ac"><h2><svg class="ic" style="width:18px;height:18px"><use href="#i-shield"/></svg> Our Solution</h2><p>PharmaGuard AI analyzes VCF files to identify variants across 6 critical genes, predicts drug-specific risks, and generates AI-powered clinical explanations using Google Gemini. Predictions align with CPIC guidelines.</p></div>
+      <div class="ac full"><h2><svg class="ic" style="width:18px;height:18px"><use href="#i-settings"/></svg> Architecture</h2>
+        <div class="ts">
+          <div class="ti"><div class="ti-l">Frontend</div><div class="ti-v">Vanilla JS SPA</div></div>
+          <div class="ti"><div class="ti-l">Backend</div><div class="ti-v">Python FastAPI</div></div>
+          <div class="ti"><div class="ti-l">AI Engine</div><div class="ti-v">Google Gemini 2.0 Flash</div></div>
+          <div class="ti"><div class="ti-l">VCF Parsing</div><div class="ti-v">Custom Python Parser</div></div>
+          <div class="ti"><div class="ti-l">Risk Engine</div><div class="ti-v">CPIC API + Supabase</div></div>
+          <div class="ti"><div class="ti-l">Deployment</div><div class="ti-v">Render / Vercel</div></div>
+        </div>
       </div>
+      <div class="ac full"><h2><svg class="ic" style="width:18px;height:18px"><use href="#i-dna"/></svg> Gene Panels</h2><ul>
+        <li><strong>CYP2D6</strong> — Codeine, tramadol, many antidepressants</li>
+        <li><strong>CYP2C19</strong> — Clopidogrel, proton pump inhibitors</li>
+        <li><strong>CYP2C9</strong> — Warfarin, NSAIDs, phenytoin</li>
+        <li><strong>SLCO1B1</strong> — Statins (simvastatin, atorvastatin)</li>
+        <li><strong>TPMT</strong> — Azathioprine, mercaptopurine</li>
+        <li><strong>DPYD</strong> — Fluorouracil, capecitabine</li>
+      </ul></div>
+      <div class="ac full"><h2><svg class="ic" style="width:18px;height:18px"><use href="#i-info"/></svg> Disclaimer</h2><p>PharmaGuard AI is for <strong>research and educational purposes only</strong>. Not a medical device. Always consult a qualified healthcare provider.</p></div>
     </div>
-    <div class="ac"><h2>Gene Panels</h2><ul>
-      <li><strong>CYP2D6</strong> — Codeine, tramadol, many antidepressants</li>
-      <li><strong>CYP2C19</strong> — Clopidogrel, proton pump inhibitors</li>
-      <li><strong>CYP2C9</strong> — Warfarin, NSAIDs, phenytoin</li>
-      <li><strong>SLCO1B1</strong> — Statins (simvastatin, atorvastatin)</li>
-      <li><strong>TPMT</strong> — Azathioprine, mercaptopurine</li>
-      <li><strong>DPYD</strong> — Fluorouracil, capecitabine</li>
-    </ul></div>
-    <div class="ac"><h2>Disclaimer</h2><p>PharmaGuard AI is for <strong>research and educational purposes only</strong>. Not a medical device. Always consult a qualified healthcare provider.</p></div>
   </div>
   <div class="footer">PharmaGuard AI &mdash; RIFT 2026 &mdash; #RIFT2026 #PharmaGuard #Pharmacogenomics #AIinHealthcare</div>
 </div>
@@ -465,295 +285,6 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
   <div class="lo-s" id="lo-s">Parsing VCF file and detecting variants</div>
 </div>
 
-<script>
-const API=window.location.origin;
-let curPage='login',upFile=null,selDrugs=new Set(),aResults=null;
-
-// ━━━ AUTH STATE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-let authToken=localStorage.getItem('pg_token')||null;
-let authUser=JSON.parse(localStorage.getItem('pg_user')||'null');
-
-function setAuth(token,user){
-  authToken=token;authUser=user;
-  if(token){localStorage.setItem('pg_token',token);localStorage.setItem('pg_user',JSON.stringify(user))}
-  else{localStorage.removeItem('pg_token');localStorage.removeItem('pg_user')}
-}
-
-function isLoggedIn(){return !!authToken}
-
-// ━━━ NAVIGATION (auth-gated) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function navigate(p){
-  // If not logged in, only allow login page
-  if(!isLoggedIn()&&p!=='login'){p='login'}
-  // If logged in and trying to go to login, redirect to home
-  if(isLoggedIn()&&p==='login'){p='home'}
-
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
-  const el=document.getElementById('page-'+p);
-  if(el)el.classList.add('active');
-  const nl=document.querySelector(`.nav-link[data-page="${p}"]`);
-  if(nl)nl.classList.add('active');
-
-  // Show/hide nav
-  document.getElementById('main-nav').classList.toggle('vis',isLoggedIn());
-
-  curPage=p;
-  window.scrollTo({top:0,behavior:'smooth'});
-
-  // Auto-load dashboard data
-  if(p==='dashboard'&&isLoggedIn())loadDashboard();
-}
-
-window.addEventListener('load', () => {
-  const hash = window.location.hash;
-  if (hash && hash.includes('access_token=')) {
-    
-    const params = new URLSearchParams(hash.substring(1));
-    const token = params.get('access_token');
-    if (token) {
-      
-      setAuth(token, { email: "Confirmed User" }); 
-      window.location.hash = "";
-      navigate('home');
-    }
-  }
-});
-
-document.querySelectorAll('.nav-link').forEach(l=>l.addEventListener('click',()=>{if(l.dataset.page)navigate(l.dataset.page)}));
-
-// ━━━ AUTH FUNCTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function showAuthErr(msg,type){
-  const el=document.getElementById('auth-err');
-  document.getElementById('auth-err-t').textContent=msg;
-  el.classList.remove('success');
-  if(type==='success')el.classList.add('success');
-  el.classList.add('vis');
-}
-
-async function doLogin(){
-  const email=document.getElementById('auth-email').value.trim();
-  const pw=document.getElementById('auth-pw').value;
-  if(!email||!pw){showAuthErr('Email and password required.');return}
-  try{
-    const r=await fetch(API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
-    const d=await r.json();
-    if(!r.ok)throw new Error(d.detail||'Login failed');
-    setAuth(d.access_token,d.user);
-    document.getElementById('user-tag').textContent=d.user.email;
-    navigate('home');
-  }catch(e){showAuthErr(e.message)}
-}
-
-async function doSignup(){
-  const email=document.getElementById('auth-email').value.trim();
-  const pw=document.getElementById('auth-pw').value;
-  if(!email||!pw){showAuthErr('Email and password required.');return}
-  if(pw.length<6){showAuthErr('Password must be 6+ characters.');return}
-  try{
-    const r=await fetch(API+'/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
-    const d=await r.json();
-    if(!r.ok)throw new Error(d.detail||'Signup failed');
-    showAuthErr('Account created! You can now sign in.','success');
-  }catch(e){showAuthErr(e.message)}
-}
-
-function doLogout(){
-  setAuth(null,null);
-  document.getElementById('auth-email').value='';
-  document.getElementById('auth-pw').value='';
-  document.getElementById('auth-err').classList.remove('vis','success');
-  navigate('login');
-}
-
-// ━━━ FILE UPLOAD ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const uz=document.getElementById('uz'),finp=document.getElementById('finp');
-['dragenter','dragover'].forEach(e=>uz.addEventListener(e,ev=>{ev.preventDefault();uz.classList.add('drag')}));
-['dragleave','drop'].forEach(e=>uz.addEventListener(e,ev=>{ev.preventDefault();uz.classList.remove('drag')}));
-uz.addEventListener('drop',ev=>{if(ev.dataTransfer.files.length)handleFile(ev.dataTransfer.files[0])});
-finp.addEventListener('change',ev=>{if(ev.target.files.length)handleFile(ev.target.files[0])});
-
-function handleFile(f){
-  hideErr();
-  if(!f.name.toLowerCase().endsWith('.vcf')){showErr('Invalid file type. Please upload a .vcf file.');uz.classList.add('err');setTimeout(()=>uz.classList.remove('err'),2e3);return}
-  if(f.size>5*1024*1024){showErr('File too large. Maximum size is 5 MB.');uz.classList.add('err');setTimeout(()=>uz.classList.remove('err'),2e3);return}
-  const r=new FileReader();
-  r.onload=e=>{
-    const c=e.target.result,lines=c.split('\n').filter(l=>l.trim());
-    if(!lines.some(l=>l.startsWith('#CHROM')||l.startsWith('##fileformat')))showErr('Warning: File may not be valid VCF. Server will validate.');
-    upFile=f;showOk(f);updSteps();updBtn();
-  };r.readAsText(f);
-}
-function showOk(f){document.getElementById('uz-p').style.display='none';document.getElementById('uz-ok').style.display='block';document.getElementById('fn').textContent=f.name;document.getElementById('fs').textContent=fmtSz(f.size);uz.classList.add('has');uz.classList.remove('err')}
-function rmFile(ev){ev.stopPropagation();upFile=null;finp.value='';document.getElementById('uz-p').style.display='';document.getElementById('uz-ok').style.display='none';uz.classList.remove('has');updSteps();updBtn()}
-function fmtSz(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(2)+' MB'}
-
-// ━━━ DRUG SELECT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-document.querySelectorAll('.pill').forEach(p=>p.addEventListener('click',()=>{
-  const d=p.dataset.drug;
-  if(selDrugs.has(d)){selDrugs.delete(d);p.classList.remove('sel')}else{selDrugs.add(d);p.classList.add('sel')}
-  syncDI();updSteps();updBtn();
-}));
-function syncDI(){document.getElementById('dinp').value=Array.from(selDrugs).join(', ')}
-document.getElementById('dinp').addEventListener('input',ev=>{
-  selDrugs=new Set(ev.target.value.split(',').map(d=>d.trim().toUpperCase()).filter(Boolean));
-  document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('sel',selDrugs.has(p.dataset.drug)));
-  updSteps();updBtn();
-});
-function selAll(){document.querySelectorAll('.pill').forEach(p=>{selDrugs.add(p.dataset.drug);p.classList.add('sel')});syncDI();updSteps();updBtn()}
-
-function updSteps(){
-  const s1=document.getElementById('step-1'),s2=document.getElementById('step-2'),s3=document.getElementById('step-3');
-  s1.className=upFile?'stp done':'stp act';
-  s2.className=selDrugs.size>0?'stp done':(upFile?'stp act':'stp');
-  s3.className=(upFile&&selDrugs.size>0)?'stp act':'stp';
-}
-function updBtn(){
-  const ok=upFile&&selDrugs.size>0;
-  document.getElementById('abtn').disabled=!ok;
-  document.getElementById('astat').textContent=ok?`Ready — ${selDrugs.size} drug(s) selected`:(!upFile?'Upload a VCF file to continue':'Select at least one drug');
-}
-updBtn();
-
-function showErr(m){document.getElementById('eb-t').textContent=m;document.getElementById('eb').classList.add('vis')}
-function hideErr(){document.getElementById('eb').classList.remove('vis')}
-
-// ━━━ ANALYSIS (always uses secure endpoint since user is always logged in) ━━━
-async function runAnalysis(){
-  if(!upFile||!selDrugs.size)return;hideErr();
-  const lo=document.getElementById('lo'),los=document.getElementById('lo-s');lo.classList.add('active');
-  const msgs=['Parsing VCF file...','Detecting pharmacogenomic variants...','Querying CPIC guidelines...','Generating AI explanations...','Saving to dashboard...','Assembling report...'];
-  let mi=0;const si=setInterval(()=>{mi=(mi+1)%msgs.length;los.textContent=msgs[mi]},2e3);
-  try{
-    const fd=new FormData();fd.append('vcf_file',upFile);fd.append('drugs',Array.from(selDrugs).join(','));
-    const endpoint=authToken?'/api/analyze-secure':'/api/analyze';
-    const headers=authToken?{'Authorization':'Bearer '+authToken}:{};
-    const res=await fetch(API+endpoint,{method:'POST',body:fd,headers});
-    if(!res.ok){let em='Analysis failed.';try{em=(await res.json()).detail||em}catch{}throw new Error(em)}
-    const data=await res.json();
-    aResults=data.results?data:{results:data.results||[data],total_drugs_analyzed:data.total_drugs_analyzed||1,analysis_id:data.analysis_id||''};
-    renderResults(aResults);
-    document.getElementById('nav-results').style.display='';navigate('results');
-  }catch(e){showErr(e.message||'Failed to connect to server.')}
-  finally{clearInterval(si);lo.classList.remove('active')}
-}
-
-// ━━━ RENDER RESULTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function renderResults(data){
-  const c=document.getElementById('rcon'),rs=data.results||[];
-  document.getElementById('rs-sub').textContent=`${rs.length} drug(s) analyzed · Patient: ${rs[0]?.patient_id||'Unknown'}`;
-  c.innerHTML=rs.map((r,i)=>renderCard(r,i)).join('');
-  c.querySelectorAll('.st').forEach(b=>b.addEventListener('click',()=>{b.classList.toggle('open');b.nextElementSibling.classList.toggle('open')}));
-}
-
-function rc(l){const x=(l||'').toLowerCase().replace(/\s+/g,'');return x==='safe'?'safe':x==='adjustdosage'?'adjust':x==='toxic'?'toxic':x==='ineffective'?'ineffective':'unknown'}
-function ri(c){return{safe:'&#x2705;',adjust:'&#x26A0;',toxic:'&#x2620;',ineffective:'&#x26D4;',unknown:'&#x2753;'}[c]||''}
-function pf(p){return{PM:'Poor Metabolizer (PM)',IM:'Intermediate Metabolizer (IM)',NM:'Normal Metabolizer (NM)',RM:'Rapid Metabolizer (RM)',URM:'Ultra-Rapid Metabolizer (URM)'}[p]||p}
-function fe(e){return(e||'unknown').replace(/_/g,' ')}
-function eh(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-
-function renderCard(r,idx){
-  const c=rc(r.risk_assessment.risk_label),p=r.pharmacogenomic_profile,rec=r.clinical_recommendation,llm=r.llm_generated_explanation,qm=r.quality_metrics,vs=p.detected_variants||[];
-  return`<div class="rc fin" style="animation-delay:${idx*.1}s">
-  <div class="rb ${c}"><div class="rl"><span class="r-drug">${r.drug}</span><span class="r-badge ${c}">${ri(c)} ${r.risk_assessment.risk_label}</span></div>
-  <div class="rm"><span>Confidence: <strong>${(r.risk_assessment.confidence_score*100).toFixed(0)}%</strong></span><span>Severity: <strong>${r.risk_assessment.severity}</strong></span><span>Gene: <strong>${p.primary_gene}</strong></span><span>${p.diplotype} → ${p.phenotype}</span></div></div>
-  <div>
-  <div class="cs"><button class="st open">&#x1F9EC; Pharmacogenomic Profile<span class="chv">&#x25BC;</span></button>
-  <div class="sc open"><div class="pg">
-    <div class="pi"><div class="pi-l">Primary Gene</div><div class="pi-v mono">${p.primary_gene}</div></div>
-    <div class="pi"><div class="pi-l">Diplotype</div><div class="pi-v mono">${p.diplotype}</div></div>
-    <div class="pi"><div class="pi-l">Phenotype</div><div class="pi-v">${pf(p.phenotype)}</div></div>
-    <div class="pi"><div class="pi-l">Variants Detected</div><div class="pi-v">${vs.length}</div></div>
-  </div>${vs.length?`<table class="vt" style="margin-top:1rem"><thead><tr><th>rsID</th><th>Star</th><th>GT</th><th>Effect</th><th>Qual</th></tr></thead><tbody>${vs.map(v=>`<tr><td class="rsid">${v.rsid}</td><td class="star">${v.star_allele}</td><td>${v.genotype||'—'}</td><td><span class="et ${v.functional_effect}">${fe(v.functional_effect)}</span></td><td>${v.quality||'—'}</td></tr>`).join('')}</tbody></table>`:'<p style="color:var(--text-3);font-size:.85rem;margin-top:.5rem">No variants — wildtype assumed.</p>'}</div></div>
-  <div class="cs"><button class="st open">&#x1F4CB; Clinical Recommendation<span class="chv">&#x25BC;</span></button>
-  <div class="sc open"><div class="rd">${rec.dosing_recommendation}</div>
-  ${rec.urgency?`<div class="rr"><span class="rr-l">Urgency</span><span class="ut ${rec.urgency}">${rec.urgency}</span></div>`:''}
-  ${rec.alternative_drugs?.length?`<div class="rr"><span class="rr-l">Alternatives</span><div class="rr-chips">${rec.alternative_drugs.map(d=>`<span class="rr-c">${d}</span>`).join('')}</div></div>`:''}
-  ${rec.monitoring_parameters?.length?`<div class="rr"><span class="rr-l">Monitoring</span><div class="rr-chips">${rec.monitoring_parameters.map(m=>`<span class="rr-c">${m}</span>`).join('')}</div></div>`:''}
-  ${rec.cpic_guideline_reference?`<div class="rr"><span class="rr-l">CPIC Ref</span><span style="font-size:.8rem;color:var(--text-3)">${rec.cpic_guideline_reference}</span></div>`:''}</div></div>
-  <div class="cs"><button class="st">&#x1F916; AI-Generated Explanation<span class="chv">&#x25BC;</span></button>
-  <div class="sc"><div class="llm">
-    <p><strong>Summary:</strong> ${llm.summary}</p>
-    ${llm.mechanism?`<p><strong>Mechanism:</strong> ${llm.mechanism}</p>`:''}
-    ${llm.variant_specific_effects?.length?`<p><strong>Variant Effects:</strong></p><ul style="padding-left:1.2rem;margin-bottom:1rem">${llm.variant_specific_effects.map(e=>`<li style="font-size:.85rem;color:var(--text-2);margin-bottom:.3rem">${e}</li>`).join('')}</ul>`:''}
-    ${llm.patient_friendly_summary?`<p><strong>For the Patient:</strong> ${llm.patient_friendly_summary}</p>`:''}
-    ${llm.citations?.length?`<p style="font-size:.78rem;color:var(--text-3)"><strong>References:</strong> ${llm.citations.join(' · ')}</p>`:''}
-    <div class="llm-tag">&#x2728; ${llm.model_used}</div>
-  </div></div></div>
-  <div class="cs"><button class="st">&#x2699; Quality Metrics<span class="chv">&#x25BC;</span></button>
-  <div class="sc"><div class="pg">
-    <div class="pi"><div class="pi-l">VCF Parsing</div><div class="pi-v">${qm.vcf_parsing_success?'✓ Success':'✗ Failed'}</div></div>
-    <div class="pi"><div class="pi-l">Total Variants</div><div class="pi-v">${qm.total_variants_parsed}</div></div>
-    <div class="pi"><div class="pi-l">PGx Variants</div><div class="pi-v">${qm.pharmacogenomic_variants_found}</div></div>
-    <div class="pi"><div class="pi-l">Gene Coverage</div><div class="pi-v mono" style="font-size:.78rem">${qm.gene_coverage?.join(', ')||'None'}</div></div>
-  </div></div></div>
-  <div class="cs"><button class="st">&#x7B;&#x7D; Raw JSON Output<span class="chv">&#x25BC;</span></button>
-  <div class="sc"><div class="jv"><div class="jv-bar"><button class="jv-btn" onclick="cpJ(${idx})">Copy</button><button class="jv-btn" onclick="dlJ(${idx})">Download</button></div><pre class="jv-pre">${eh(JSON.stringify(r,null,2))}</pre></div></div></div>
-  </div></div>`;
-}
-
-function cpJ(i){const r=aResults.results[i];navigator.clipboard.writeText(JSON.stringify(r,null,2)).then(()=>{const cards=document.querySelectorAll('.rc');if(cards[i]){const b=cards[i].querySelector('.jv-btn');if(b){b.textContent='Copied!';b.classList.add('copied');setTimeout(()=>{b.textContent='Copy';b.classList.remove('copied')},2e3)}}})}
-function dlJ(i){const r=aResults.results[i],b=new Blob([JSON.stringify(r,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=`pharmaguard_${r.drug}_${r.patient_id}.json`;a.click();URL.revokeObjectURL(u)}
-function cpAll(){navigator.clipboard.writeText(JSON.stringify(aResults,null,2))}
-function dlAll(){const b=new Blob([JSON.stringify(aResults,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='pharmaguard_full_analysis.json';a.click();URL.revokeObjectURL(u)}
-
-// ━━━ DASHBOARD ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-async function loadDashboard(){
-  if(!authToken)return;
-  const ll=document.getElementById('dash-loading'),em=document.getElementById('dash-empty'),ls=document.getElementById('dash-list');
-  ll.style.display='';em.style.display='none';ls.innerHTML='';
-  try{
-    const r=await fetch(API+'/api/dashboard',{headers:{'Authorization':'Bearer '+authToken}});
-    if(!r.ok)throw new Error('Failed to load');
-    const d=await r.json();
-    ll.style.display='none';
-    if(!d.reports||!d.reports.length){em.style.display='';return}
-    document.getElementById('dash-sub').textContent=`${d.total} saved report(s) · ${authUser?.email||''}`;
-    ls.innerHTML=d.reports.map(rp=>{
-      const cls=rc(rp.risk_label);
-      return`<div class="dash-card" onclick="viewReport('${rp.id}')">
-        <div class="dash-left">
-          <span class="r-badge ${cls}" style="flex-shrink:0">${ri(cls)} ${rp.risk_label}</span>
-          <span class="dash-drug">${rp.drug}</span>
-          <span class="dash-meta">${rp.gene} ${rp.diplotype||''} → ${rp.phenotype||''} · ${rp.patient_id} · ${new Date(rp.created_at).toLocaleDateString()}</span>
-        </div>
-        <div class="dash-right">
-          <button class="dash-del" onclick="event.stopPropagation();delReport('${rp.id}')" title="Delete">&#x1F5D1;</button>
-        </div>
-      </div>`;
-    }).join('');
-  }catch(e){ll.textContent='Failed to load reports. '+e.message}
-}
-
-async function viewReport(id){
-  if(!authToken)return;
-  try{
-    const r=await fetch(API+'/api/dashboard/'+id,{headers:{'Authorization':'Bearer '+authToken}});
-    if(!r.ok)throw new Error('Not found');
-    const d=await r.json();
-    if(d.report_json){
-      aResults={results:[d.report_json],total_drugs_analyzed:1,analysis_id:''};
-      renderResults(aResults);
-      document.getElementById('nav-results').style.display='';navigate('results');
-    }
-  }catch(e){alert('Error loading report: '+e.message)}
-}
-
-async function delReport(id){
-  if(!confirm('Delete this report?'))return;
-  try{
-    await fetch(API+'/api/dashboard/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+authToken}});
-    loadDashboard();
-  }catch(e){alert('Delete failed: '+e.message)}
-}
-
-// ━━━ INIT: check if already logged in ━━━━━━━━━━━━━━━━━━━━━━━━━━
-if(isLoggedIn()){
-  document.getElementById('user-tag').textContent=authUser?.email||'';
-  navigate('home');
-}else{
-  navigate('login');
-}
-</script>
+<script src="js/app.js"></script>
 </body>
 </html>
