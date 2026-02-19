@@ -52,7 +52,7 @@ Adverse drug reactions (ADRs) kill **over 100,000 Americans annually**. Many of 
 
 | Resource | Link |
 |----------|------|
-| **Live Application** | [pharmaguard-f2fy.onrender.com](https://pharmaguard-f2fy.onrender.com) |
+| **Live Application** | [pharmaguard-f2fy.onrender.com](https://pharmaguard-f2fy.onrender.com) | 
 | **LinkedIn Video Demo** | *[Coming Soon — link will be updated here]* |
 
 ---
@@ -142,8 +142,8 @@ The system follows a layered architecture with a clear separation between the fr
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/pharmaguard-ai.git
-cd pharmaguard-ai
+git clone https://github.com/Veebeeo/PharmaGuard.git
+cd pharmaguard
 
 # 2. Set up environment variables
 cd backend
@@ -168,12 +168,12 @@ uvicorn main:app --reload --port 8000
 ### Docker
 
 ```bash
-docker build -t pharmaguard-ai .
+docker build -t pharmaguard.
 docker run -p 10000:10000 \
   -e GOOGLE_API_KEY=your_key_here \
   -e SUPABASE_URL=your_url \
   -e SUPABASE_KEY=your_key \
-  pharmaguard-ai
+  pharmaguard
 ```
 
 ### Supabase Database Setup
@@ -444,8 +444,8 @@ If serving the frontend separately:
 
 | Name | Role |
 |------|------|
-| **[Your Name]** | Full-stack development, pharmacogenomics engine, AI integration |
-| **[Team Member 2]** | [Role — e.g., Frontend design, testing, documentation] |
+| **[Visesh Bajpai]** | Full-stack development, pharmacogenomics engine, AI integration |
+| **[Suryansh Vaish]** | [Role — Testing, documentation] |
 
 ---
 
