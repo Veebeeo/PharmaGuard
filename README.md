@@ -2,7 +2,7 @@
 
 **AI-Powered Pharmacogenomic Risk Analysis**
 
-> Decode your genes. Protect your life.
+
 [![Live Demo (Vercel)](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://pharma-guard-iota.vercel.app/)
 [![Live Demo(Render)](https://img.shields.io/badge/Live_Demo-PharmaGuard_AI-2d6a4f?style=for-the-badge)](https://pharmaguard-f2fy.onrender.com)
 [![LinkedIn Video](https://img.shields.io/badge/LinkedIn-Demo_Video-0A66C2?style=for-the-badge)](YOUR_LINKEDIN_VIDEO_URL_HERE)
