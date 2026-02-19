@@ -1,0 +1,227 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="877pt" height="916pt" viewBox="0.00 0.00 877.00 915.50">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 911.5)">
+<title>PharmaGuardArchitecture</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-911.5 873,-911.5 873,4 -4,4"/>
+<g id="clust1" class="cluster">
+<title>cluster_pharmaguard</title>
+<polygon fill="none" stroke="#888888" stroke-dasharray="5,2" points="280,-145.1 280,-821.3 861,-821.3 861,-145.1 280,-145.1"/>
+<text text-anchor="middle" x="570.5" y="-802.9" font-family="Helvetica Neue, sans-serif" font-size="16.00">PharmaGuard AI Platform</text>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_frontend</title>
+<path fill="#f8fdff" stroke="#0288d1" d="M339,-670.1C339,-670.1 530,-670.1 530,-670.1 536,-670.1 542,-676.1 542,-682.1 542,-682.1 542,-762.1 542,-762.1 542,-768.1 536,-774.1 530,-774.1 530,-774.1 339,-774.1 339,-774.1 333,-774.1 327,-768.1 327,-762.1 327,-762.1 327,-682.1 327,-682.1 327,-676.1 333,-670.1 339,-670.1"/>
+<text text-anchor="middle" x="434.5" y="-757.5" font-family="Helvetica Neue, sans-serif" font-size="14.00">Frontend (Single Page Application)</text>
+</g>
+<g id="clust3" class="cluster">
+<title>cluster_backend</title>
+<path fill="#f8fff9" stroke="#388e3c" d="M312,-165.1C312,-165.1 829,-165.1 829,-165.1 835,-165.1 841,-171.1 841,-177.1 841,-177.1 841,-614.7 841,-614.7 841,-620.7 835,-626.7 829,-626.7 829,-626.7 312,-626.7 312,-626.7 306,-626.7 300,-620.7 300,-614.7 300,-614.7 300,-177.1 300,-177.1 300,-171.1 306,-165.1 312,-165.1"/>
+<text text-anchor="middle" x="570.5" y="-610.1" font-family="Helvetica Neue, sans-serif" font-size="14.00">Backend (Python FastAPI)</text>
+</g>
+<g id="clust4" class="cluster">
+<title>cluster_infra</title>
+<path fill="#f4fcfe" stroke="#0097a7" d="M20,-8C20,-8 490,-8 490,-8 496,-8 502,-14 502,-20 502,-20 502,-90.7 502,-90.7 502,-96.7 496,-102.7 490,-102.7 490,-102.7 20,-102.7 20,-102.7 14,-102.7 8,-96.7 8,-90.7 8,-90.7 8,-20 8,-20 8,-14 14,-8 20,-8"/>
+<text text-anchor="middle" x="255" y="-86.1" font-family="Helvetica Neue, sans-serif" font-size="14.00">Supabase Cloud Infrastructure</text>
+</g>
+<g id="clust5" class="cluster">
+<title>cluster_external</title>
+<path fill="#fdf8ff" stroke="#8e24aa" d="M542,-15.35C542,-15.35 845,-15.35 845,-15.35 851,-15.35 857,-21.35 857,-27.35 857,-27.35 857,-83.35 857,-83.35 857,-89.35 851,-95.35 845,-95.35 845,-95.35 542,-95.35 542,-95.35 536,-95.35 530,-89.35 530,-83.35 530,-83.35 530,-27.35 530,-27.35 530,-21.35 536,-15.35 542,-15.35"/>
+<text text-anchor="middle" x="693.5" y="-78.75" font-family="Helvetica Neue, sans-serif" font-size="14.00">External APIs</text>
+</g>
+<!-- Clinician -->
+<g id="node1" class="node">
+<title>Clinician</title>
+<ellipse fill="#ffffff" stroke="#333333" stroke-width="2" cx="432" cy="-889.5" rx="65.1" ry="18"/>
+<text text-anchor="middle" x="432" y="-885.6" font-family="Helvetica Neue, sans-serif" font-size="13.00">Clinician / User</text>
+</g>
+<!-- UI -->
+<g id="node2" class="node">
+<title>UI</title>
+<path fill="#e1f5fe" stroke="#0288d1" stroke-width="2" d="M502.21,-729.3C502.21,-729.3 361.79,-729.3 361.79,-729.3 355.79,-729.3 349.79,-723.3 349.79,-717.3 349.79,-717.3 349.79,-702.1 349.79,-702.1 349.79,-696.1 355.79,-690.1 361.79,-690.1 361.79,-690.1 502.21,-690.1 502.21,-690.1 508.21,-690.1 514.21,-696.1 514.21,-702.1 514.21,-702.1 514.21,-717.3 514.21,-717.3 514.21,-723.3 508.21,-729.3 502.21,-729.3"/>
+<text text-anchor="middle" x="432" y="-713.6" font-family="Helvetica Neue, sans-serif" font-size="13.00">UI Layer</text>
+<text text-anchor="middle" x="432" y="-698" font-family="Helvetica Neue, sans-serif" font-size="13.00">(Vanilla JS, HTML5, CSS3)</text>
+</g>
+<!-- Clinician&#45;&gt;UI -->
+<g id="edge1" class="edge">
+<title>Clinician-&gt;UI</title>
+<path fill="none" stroke="#555555" d="M432,-870.8C432,-840.6 432,-778.77 432,-741.41"/>
+<polygon fill="#555555" stroke="#555555" points="435.5,-741.72 432,-731.72 428.5,-741.72 435.5,-741.72"/>
+<text text-anchor="middle" x="501.21" y="-832.6" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Uploads VCF &amp; Selects Drugs</text>
+</g>
+<!-- Router -->
+<g id="node3" class="node">
+<title>Router</title>
+<path fill="#e8f5e9" stroke="#388e3c" stroke-width="2" d="M457.79,-581.9C457.79,-581.9 406.21,-581.9 406.21,-581.9 400.21,-581.9 394.21,-575.9 394.21,-569.9 394.21,-569.9 394.21,-554.7 394.21,-554.7 394.21,-548.7 400.21,-542.7 406.21,-542.7 406.21,-542.7 457.79,-542.7 457.79,-542.7 463.79,-542.7 469.79,-548.7 469.79,-554.7 469.79,-554.7 469.79,-569.9 469.79,-569.9 469.79,-575.9 463.79,-581.9 457.79,-581.9"/>
+<text text-anchor="middle" x="432" y="-566.2" font-family="Helvetica Neue, sans-serif" font-size="13.00">API Router</text>
+<text text-anchor="middle" x="432" y="-550.6" font-family="Helvetica Neue, sans-serif" font-size="13.00">(main.py)</text>
+</g>
+<!-- UI&#45;&gt;Router -->
+<g id="edge2" class="edge">
+<title>UI-&gt;Router</title>
+<path fill="none" stroke="#555555" d="M432,-689.39C432,-665.06 432,-622.94 432,-594.13"/>
+<polygon fill="#555555" stroke="#555555" points="435.5,-594.2 432,-584.2 428.5,-594.2 435.5,-594.2"/>
+<text text-anchor="middle" x="478.59" y="-651.2" font-family="Helvetica Neue, sans-serif" font-size="11.00"> REST API Calls</text>
+<text text-anchor="middle" x="478.59" y="-638" font-family="Helvetica Neue, sans-serif" font-size="11.00"> (JSON / Form-Data)</text>
+</g>
+<!-- VCFParser -->
+<g id="node4" class="node">
+<title>VCFParser</title>
+<path fill="#fff3e0" stroke="#f57c00" stroke-width="2" d="M645.88,-458.3C645.88,-458.3 574.12,-458.3 574.12,-458.3 568.12,-458.3 562.12,-452.3 562.12,-446.3 562.12,-446.3 562.12,-431.1 562.12,-431.1 562.12,-425.1 568.12,-419.1 574.12,-419.1 574.12,-419.1 645.88,-419.1 645.88,-419.1 651.88,-419.1 657.88,-425.1 657.88,-431.1 657.88,-431.1 657.88,-446.3 657.88,-446.3 657.88,-452.3 651.88,-458.3 645.88,-458.3"/>
+<text text-anchor="middle" x="610" y="-442.6" font-family="Helvetica Neue, sans-serif" font-size="13.00">VCF Parser</text>
+<text text-anchor="middle" x="610" y="-427" font-family="Helvetica Neue, sans-serif" font-size="13.00">(vcf_parser.py)</text>
+</g>
+<!-- Router&#45;&gt;VCFParser -->
+<g id="edge3" class="edge">
+<title>Router-&gt;VCFParser</title>
+<path fill="none" stroke="#555555" d="M448.74,-541.84C463.33,-525.73 485.67,-503.03 508.49,-487.3 521.51,-478.32 536.5,-470.24 550.89,-463.4"/>
+<polygon fill="#555555" stroke="#555555" points="552.23,-466.64 559.85,-459.28 549.3,-460.28 552.23,-466.64"/>
+<text text-anchor="middle" x="558.74" y="-503.8" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Parses Uploaded Files</text>
+<text text-anchor="middle" x="558.74" y="-490.6" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Extracts Variants</text>
+</g>
+<!-- RiskEngine -->
+<g id="node5" class="node">
+<title>RiskEngine</title>
+<path fill="#fff3e0" stroke="#f57c00" stroke-width="2" d="M626.95,-347.9C626.95,-347.9 471.05,-347.9 471.05,-347.9 465.05,-347.9 459.05,-341.9 459.05,-335.9 459.05,-335.9 459.05,-320.7 459.05,-320.7 459.05,-314.7 465.05,-308.7 471.05,-308.7 471.05,-308.7 626.95,-308.7 626.95,-308.7 632.95,-308.7 638.95,-314.7 638.95,-320.7 638.95,-320.7 638.95,-335.9 638.95,-335.9 638.95,-341.9 632.95,-347.9 626.95,-347.9"/>
+<text text-anchor="middle" x="549" y="-332.2" font-family="Helvetica Neue, sans-serif" font-size="13.00">Pharmacogenomic Risk Engine</text>
+<text text-anchor="middle" x="549" y="-316.6" font-family="Helvetica Neue, sans-serif" font-size="13.00">(risk_engine.py)</text>
+</g>
+<!-- Router&#45;&gt;RiskEngine -->
+<g id="edge4" class="edge">
+<title>Router-&gt;RiskEngine</title>
+<path fill="none" stroke="#555555" d="M426.34,-542.13C419.05,-513.61 409.53,-459.08 429.5,-419.1 430.09,-417.91 478.61,-381.66 513.64,-355.58"/>
+<polygon fill="#555555" stroke="#555555" points="515.51,-358.55 521.44,-349.77 511.33,-352.94 515.51,-358.55"/>
+<text text-anchor="middle" x="485.25" y="-435.4" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Evaluates Patient Profile</text>
+</g>
+<!-- GenAI -->
+<g id="node6" class="node">
+<title>GenAI</title>
+<path fill="#fff3e0" stroke="#f57c00" stroke-width="2" d="M809.16,-458.3C809.16,-458.3 712.84,-458.3 712.84,-458.3 706.84,-458.3 700.84,-452.3 700.84,-446.3 700.84,-446.3 700.84,-431.1 700.84,-431.1 700.84,-425.1 706.84,-419.1 712.84,-419.1 712.84,-419.1 809.16,-419.1 809.16,-419.1 815.16,-419.1 821.16,-425.1 821.16,-431.1 821.16,-431.1 821.16,-446.3 821.16,-446.3 821.16,-452.3 815.16,-458.3 809.16,-458.3"/>
+<text text-anchor="middle" x="761" y="-442.6" font-family="Helvetica Neue, sans-serif" font-size="13.00">LLM Service</text>
+<text text-anchor="middle" x="761" y="-427" font-family="Helvetica Neue, sans-serif" font-size="13.00">(gemini_service.py)</text>
+</g>
+<!-- Router&#45;&gt;GenAI -->
+<g id="edge5" class="edge">
+<title>Router-&gt;GenAI</title>
+<path fill="none" stroke="#555555" d="M470.59,-553.79C508.15,-545.89 566.49,-532.06 615,-513.7 650.74,-500.17 689.22,-480.44 717.7,-464.75"/>
+<polygon fill="#555555" stroke="#555555" points="719.36,-467.83 726.4,-459.91 715.96,-461.71 719.36,-467.83"/>
+<text text-anchor="middle" x="742.67" y="-497.2" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Requests Clinical Explanations</text>
+</g>
+<!-- DBClient -->
+<g id="node8" class="node">
+<title>DBClient</title>
+<path fill="#fff3e0" stroke="#f57c00" stroke-width="2" d="M456.24,-224.3C456.24,-224.3 331.76,-224.3 331.76,-224.3 325.76,-224.3 319.76,-218.3 319.76,-212.3 319.76,-212.3 319.76,-197.1 319.76,-197.1 319.76,-191.1 325.76,-185.1 331.76,-185.1 331.76,-185.1 456.24,-185.1 456.24,-185.1 462.24,-185.1 468.24,-191.1 468.24,-197.1 468.24,-197.1 468.24,-212.3 468.24,-212.3 468.24,-218.3 462.24,-224.3 456.24,-224.3"/>
+<text text-anchor="middle" x="394" y="-208.6" font-family="Helvetica Neue, sans-serif" font-size="13.00">Database / Storage Client</text>
+<text text-anchor="middle" x="394" y="-193" font-family="Helvetica Neue, sans-serif" font-size="13.00">(supabase_client.py)</text>
+</g>
+<!-- Router&#45;&gt;DBClient -->
+<g id="edge6" class="edge">
+<title>Router-&gt;DBClient</title>
+<path fill="none" stroke="#555555" d="M419.68,-541.73C401.1,-510.91 366.8,-448.54 354.74,-390.1 343.47,-335.48 364.59,-271.89 379.98,-235.46"/>
+<polygon fill="#555555" stroke="#555555" points="383.12,-237.01 383.92,-226.45 376.71,-234.21 383.12,-237.01"/>
+<text text-anchor="middle" x="406.37" y="-380.2" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Manages Auth &amp; State</text>
+</g>
+<!-- VCFParser&#45;&gt;RiskEngine -->
+<g id="edge9" class="edge">
+<title>VCFParser-&gt;RiskEngine</title>
+<path fill="none" stroke="#555555" stroke-dasharray="5,2" d="M599.09,-418.32C589.78,-401.78 576.25,-377.72 565.59,-358.79"/>
+<polygon fill="#555555" stroke="#555555" points="568.71,-357.19 560.76,-350.2 562.61,-360.63 568.71,-357.19"/>
+<text text-anchor="middle" x="640.74" y="-380.2" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Matches Known Variants</text>
+</g>
+<!-- CPICAdapter -->
+<g id="node7" class="node">
+<title>CPICAdapter</title>
+<path fill="#fff3e0" stroke="#f57c00" stroke-width="2" d="M647.11,-224.3C647.11,-224.3 556.89,-224.3 556.89,-224.3 550.89,-224.3 544.89,-218.3 544.89,-212.3 544.89,-212.3 544.89,-197.1 544.89,-197.1 544.89,-191.1 550.89,-185.1 556.89,-185.1 556.89,-185.1 647.11,-185.1 647.11,-185.1 653.11,-185.1 659.11,-191.1 659.11,-197.1 659.11,-197.1 659.11,-212.3 659.11,-212.3 659.11,-218.3 653.11,-224.3 647.11,-224.3"/>
+<text text-anchor="middle" x="602" y="-208.6" font-family="Helvetica Neue, sans-serif" font-size="13.00">CPIC API Adapter</text>
+<text text-anchor="middle" x="602" y="-193" font-family="Helvetica Neue, sans-serif" font-size="13.00">(cpic_api.py)</text>
+</g>
+<!-- RiskEngine&#45;&gt;CPICAdapter -->
+<g id="edge7" class="edge">
+<title>RiskEngine-&gt;CPICAdapter</title>
+<path fill="none" stroke="#555555" d="M557.52,-307.76C566.01,-288.26 579.19,-258.04 589,-235.53"/>
+<polygon fill="#555555" stroke="#555555" points="592.11,-237.14 592.9,-226.58 585.7,-234.34 592.11,-237.14"/>
+<text text-anchor="middle" x="628.22" y="-269.8" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Resolves Phenotypes</text>
+<text text-anchor="middle" x="628.22" y="-256.6" font-family="Helvetica Neue, sans-serif" font-size="11.00"> &amp; Risks</text>
+</g>
+<!-- RiskEngine&#45;&gt;DBClient -->
+<g id="edge8" class="edge">
+<title>RiskEngine-&gt;DBClient</title>
+<path fill="none" stroke="#555555" d="M461.52,-307.73C445.7,-300.96 430.5,-291.88 418.66,-279.7 407.34,-268.05 401.21,-251.08 397.9,-236.32"/>
+<polygon fill="#555555" stroke="#555555" points="401.36,-235.78 396.08,-226.6 394.48,-237.07 401.36,-235.78"/>
+<text text-anchor="middle" x="489.83" y="-269.8" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Queries Local Knowledge Base</text>
+<text text-anchor="middle" x="489.83" y="-256.6" font-family="Helvetica Neue, sans-serif" font-size="11.00"> (Fallback Data)</text>
+</g>
+<!-- Gemini -->
+<g id="node12" class="node">
+<title>Gemini</title>
+<path fill="#f3e5f5" stroke="#8e24aa" stroke-width="2" d="M837.11,-60.95C837.11,-60.95 720.89,-60.95 720.89,-60.95 714.89,-60.95 708.89,-54.95 708.89,-48.95 708.89,-48.95 708.89,-36.95 708.89,-36.95 708.89,-30.95 714.89,-24.95 720.89,-24.95 720.89,-24.95 837.11,-24.95 837.11,-24.95 843.11,-24.95 849.11,-30.95 849.11,-36.95 849.11,-36.95 849.11,-48.95 849.11,-48.95 849.11,-54.95 843.11,-60.95 837.11,-60.95"/>
+<text text-anchor="middle" x="779" y="-39.05" font-family="Helvetica Neue, sans-serif" font-size="13.00">Google Gemini 2.0 API</text>
+</g>
+<!-- GenAI&#45;&gt;Gemini -->
+<g id="edge11" class="edge">
+<title>GenAI-&gt;Gemini</title>
+<path fill="none" stroke="#555555" d="M761.89,-418.17C764.83,-353.95 774.2,-149.04 777.68,-72.85"/>
+<polygon fill="#555555" stroke="#555555" points="781.16,-73.43 778.12,-63.28 774.16,-73.11 781.16,-73.43"/>
+<text text-anchor="middle" x="818.25" y="-269.8" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Generates Contextual</text>
+<text text-anchor="middle" x="818.25" y="-256.6" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Patient Summaries</text>
+</g>
+<!-- CPIC -->
+<g id="node13" class="node">
+<title>CPIC</title>
+<path fill="#f3e5f5" stroke="#8e24aa" stroke-width="2" d="M654.34,-62.55C654.34,-62.55 549.66,-62.55 549.66,-62.55 543.66,-62.55 537.66,-56.55 537.66,-50.55 537.66,-50.55 537.66,-35.35 537.66,-35.35 537.66,-29.35 543.66,-23.35 549.66,-23.35 549.66,-23.35 654.34,-23.35 654.34,-23.35 660.34,-23.35 666.34,-29.35 666.34,-35.35 666.34,-35.35 666.34,-50.55 666.34,-50.55 666.34,-56.55 660.34,-62.55 654.34,-62.55"/>
+<text text-anchor="middle" x="602" y="-46.85" font-family="Helvetica Neue, sans-serif" font-size="13.00">CPIC Guidelines API</text>
+<text text-anchor="middle" x="602" y="-31.25" font-family="Helvetica Neue, sans-serif" font-size="13.00">(api.cpicpgx.org)</text>
+</g>
+<!-- CPICAdapter&#45;&gt;CPIC -->
+<g id="edge10" class="edge">
+<title>CPICAdapter-&gt;CPIC</title>
+<path fill="none" stroke="#555555" d="M602,-184.11C602,-156.78 602,-106.92 602,-74.63"/>
+<polygon fill="#555555" stroke="#555555" points="605.5,-74.71 602,-64.71 598.5,-74.71 605.5,-74.71"/>
+<text text-anchor="middle" x="658.67" y="-127.2" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Fetches Gene-Drug Pairs</text>
+<text text-anchor="middle" x="658.67" y="-114" font-family="Helvetica Neue, sans-serif" font-size="11.00"> &amp; Clinical Recs</text>
+</g>
+<!-- Auth -->
+<g id="node9" class="node">
+<title>Auth</title>
+<path fill="#e0f7fa" stroke="#0097a7" stroke-width="2" d="M273.17,-57.68C273.17,-59.48 252.03,-60.95 226,-60.95 199.97,-60.95 178.83,-59.48 178.83,-57.68 178.83,-57.68 178.83,-28.22 178.83,-28.22 178.83,-26.42 199.97,-24.95 226,-24.95 252.03,-24.95 273.17,-26.42 273.17,-28.22 273.17,-28.22 273.17,-57.68 273.17,-57.68"/>
+<path fill="none" stroke="#0097a7" stroke-width="2" d="M273.17,-57.68C273.17,-55.87 252.03,-54.4 226,-54.4 199.97,-54.4 178.83,-55.87 178.83,-57.68"/>
+<text text-anchor="middle" x="226" y="-39.05" font-family="Helvetica Neue, sans-serif" font-size="13.00">Supabase Auth</text>
+</g>
+<!-- DBClient&#45;&gt;Auth -->
+<g id="edge12" class="edge">
+<title>DBClient-&gt;Auth</title>
+<path fill="none" stroke="#555555" d="M356.95,-184.25C336.32,-172.33 310.95,-155.8 291.56,-137.1 271.43,-117.7 253.54,-91.32 241.56,-71.59"/>
+<polygon fill="#555555" stroke="#555555" points="244.73,-70.07 236.62,-63.25 238.7,-73.64 244.73,-70.07"/>
+<text text-anchor="middle" x="340.28" y="-120.6" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Verifies JWT Tokens</text>
+</g>
+<!-- PGDB -->
+<g id="node10" class="node">
+<title>PGDB</title>
+<path fill="#e0f7fa" stroke="#0097a7" stroke-width="2" d="M494.23,-65C494.23,-67.7 454.24,-69.9 405,-69.9 355.76,-69.9 315.77,-67.7 315.77,-65 315.77,-65 315.77,-20.9 315.77,-20.9 315.77,-18.2 355.76,-16 405,-16 454.24,-16 494.23,-18.2 494.23,-20.9 494.23,-20.9 494.23,-65 494.23,-65"/>
+<path fill="none" stroke="#0097a7" stroke-width="2" d="M494.23,-65C494.23,-62.3 454.24,-60.1 405,-60.1 355.76,-60.1 315.77,-62.3 315.77,-65"/>
+<text text-anchor="middle" x="405" y="-46.85" font-family="Helvetica Neue, sans-serif" font-size="13.00">PostgreSQL</text>
+<text text-anchor="middle" x="405" y="-31.25" font-family="Helvetica Neue, sans-serif" font-size="13.00">(Guidelines, Reports, Variants)</text>
+</g>
+<!-- DBClient&#45;&gt;PGDB -->
+<g id="edge13" class="edge">
+<title>DBClient-&gt;PGDB</title>
+<path fill="none" stroke="#555555" d="M395.35,-184.11C397.1,-158.73 400.18,-113.95 402.39,-81.82"/>
+<polygon fill="#555555" stroke="#555555" points="405.86,-82.35 403.06,-72.13 398.88,-81.87 405.86,-82.35"/>
+<text text-anchor="middle" x="436.83" y="-127.2" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Persists Reports</text>
+<text text-anchor="middle" x="436.83" y="-114" font-family="Helvetica Neue, sans-serif" font-size="11.00"> &amp; Queries</text>
+</g>
+<!-- Storage -->
+<g id="node11" class="node">
+<title>Storage</title>
+<path fill="#e0f7fa" stroke="#0097a7" stroke-width="2" d="M136,-65C136,-67.7 109.11,-69.9 76,-69.9 42.89,-69.9 16,-67.7 16,-65 16,-65 16,-20.9 16,-20.9 16,-18.2 42.89,-16 76,-16 109.11,-16 136,-18.2 136,-20.9 136,-20.9 136,-65 136,-65"/>
+<path fill="none" stroke="#0097a7" stroke-width="2" d="M136,-65C136,-62.3 109.11,-60.1 76,-60.1 42.89,-60.1 16,-62.3 16,-65"/>
+<text text-anchor="middle" x="76" y="-46.85" font-family="Helvetica Neue, sans-serif" font-size="13.00">Blob Storage</text>
+<text text-anchor="middle" x="76" y="-31.25" font-family="Helvetica Neue, sans-serif" font-size="13.00">(VCF File Uploads)</text>
+</g>
+<!-- DBClient&#45;&gt;Storage -->
+<g id="edge14" class="edge">
+<title>DBClient-&gt;Storage</title>
+<path fill="none" stroke="#555555" d="M318.81,-196.97C266.11,-189.24 196.08,-172.65 144.11,-137.1 123.27,-122.84 106.44,-100.05 94.73,-80.58"/>
+<polygon fill="#555555" stroke="#555555" points="97.85,-78.99 89.83,-72.07 91.79,-82.48 97.85,-78.99"/>
+<text text-anchor="middle" x="201.56" y="-120.6" font-family="Helvetica Neue, sans-serif" font-size="11.00"> Saves Raw VCF Uploads</text>
+</g>
+</g>
+</svg>
