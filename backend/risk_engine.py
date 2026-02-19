@@ -359,4 +359,54 @@ def assess_risk(drug: str, phenotype: str, gene: str = "", diplotype: str = "") 
             "cpic_guideline_reference": rec.get("cpic_ref", ""),
             "urgency": rec.get("urgency", "routine"),
         },
+
+        
     }
+
+    if phenotype in ["PM", "Poor Metabolizer"]:
+        return {
+            "risk_assessment": {"risk_label": "Toxic", "confidence_score": 0.7, "severity": "high"},
+            "clinical_recommendation": {
+                "dosing_recommendation": f"Patient is a Poor Metabolizer for {gene}. High risk of abnormal {drug} metabolism. Consider alternatives or dose reduction.",
+                "alternative_drugs": [], "monitoring_parameters": ["Close clinical monitoring"],
+                "cpic_guideline_reference": "Inferred from phenotype", "urgency": "urgent",
+            }
+        }
+    elif phenotype in ["IM", "Intermediate Metabolizer"]:
+        return {
+            "risk_assessment": {"risk_label": "Adjust Dosage", "confidence_score": 0.7, "severity": "moderate"},
+            "clinical_recommendation": {
+                "dosing_recommendation": f"Patient is an Intermediate Metabolizer for {gene}. May require dose adjustment for {drug}.",
+                "alternative_drugs": [], "monitoring_parameters": ["Therapeutic response"],
+                "cpic_guideline_reference": "Inferred from phenotype", "urgency": "soon",
+            }
+        }
+    elif phenotype in ["URM", "RM", "Ultrarapid Metabolizer", "Rapid Metabolizer"]:
+        return {
+            "risk_assessment": {"risk_label": "Adjust Dosage", "confidence_score": 0.7, "severity": "moderate"},
+            "clinical_recommendation": {
+                "dosing_recommendation": f"Patient is a Rapid/Ultrarapid Metabolizer for {gene}. May experience lack of efficacy (if active drug) or toxicity (if prodrug).",
+                "alternative_drugs": [], "monitoring_parameters": ["Therapeutic response"],
+                "cpic_guideline_reference": "Inferred from phenotype", "urgency": "soon",
+            }
+        }
+    elif phenotype in ["NM", "Normal Metabolizer"]:
+        return {
+            "risk_assessment": {"risk_label": "Safe", "confidence_score": 0.8, "severity": "none"},
+            "clinical_recommendation": {
+                "dosing_recommendation": f"Patient is a Normal Metabolizer for {gene}. Standard dosing for {drug} is appropriate.",
+                "alternative_drugs": [], "monitoring_parameters": [],
+                "cpic_guideline_reference": "Inferred from phenotype", "urgency": "routine",
+            }
+        }
+
+    # ── 5. Ultimate Fallback ──
+    return {
+        "risk_assessment": {"risk_label": "Unknown", "confidence_score": 0.0, "severity": "low"},
+        "clinical_recommendation": {
+            "dosing_recommendation": f"No specific pharmacogenomic data found for {drug}.",
+            "alternative_drugs": [], "monitoring_parameters": [],
+            "cpic_guideline_reference": "", "urgency": "routine",
+        },
+    }
+

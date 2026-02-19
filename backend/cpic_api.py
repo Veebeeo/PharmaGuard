@@ -62,22 +62,19 @@ def _get(url: str, params: dict = None, timeout: int = 10) -> Optional[Any]:
         return None
 
 
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# 1. DIPLOTYPE → PHENOTYPE LOOKUP
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
 def cpic_diplotype_to_phenotype(gene: str, diplotype: str) -> Optional[Dict]:
-    """
-    Query CPIC diplotype view for phenotype and function info.
-    Example: cpic_diplotype_to_phenotype("CYP2D6", "*4/*6")
-    Returns: {"phenotype": "Poor Metabolizer", "activityScore": "0.0", ...}
-    """
+ 
     url = f"{CPIC_BASE}/diplotype"
     params = {
         "genesymbol": f"eq.{gene}",
         "diplotype": f"eq.{diplotype}",
     }
     data = _get(url, params)
+    if not data and "/" in diplotype:
+        a1, a2 = diplotype.split("/", 1)
+        params["diplotype"] = f"eq.{a2}/{a1}"
+        data = _get(url, params)
+
     if data and len(data) > 0:
         row = data[0]
         return {
@@ -92,10 +89,6 @@ def cpic_diplotype_to_phenotype(gene: str, diplotype: str) -> Optional[Dict]:
         }
     return None
 
-
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# 2. DRUG + PHENOTYPE → RECOMMENDATION
-# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 def cpic_get_recommendation(drug_name: str, gene: str, phenotype: str, population: str = "general") -> Optional[Dict]:
     """
