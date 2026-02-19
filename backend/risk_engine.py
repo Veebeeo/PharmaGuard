@@ -3,7 +3,7 @@ PharmaGuard AI — Risk Engine (Knowledge Base)
 All pharmacogenomic logic: variants, drug-gene maps, diplotype→phenotype,
 CPIC-aligned risk matrix, clinical recommendations.
 """
-from typing import Dict
+from typing import Dict, Optional
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 1. KNOWN PHARMACOGENOMIC VARIANTS
@@ -261,8 +261,68 @@ def resolve_drug(drug: str) -> str:
     return DRUG_ALIASES.get(d, d)
 
 
-def assess_risk(drug: str, phenotype: str) -> dict:
+def get_drug_gene_info(drug: str) -> Dict:
+    """Get drug→gene info. Tries hardcoded first (fast), then CPIC API for unknown drugs."""
     drug_upper = resolve_drug(drug)
+    # Fast path: check hardcoded
+    if drug_upper in DRUG_GENE_MAP:
+        return DRUG_GENE_MAP[drug_upper]
+    # Try Supabase
+    from supabase_client import db_get_drug_gene
+    db_result = db_get_drug_gene(drug_upper)
+    if db_result:
+        return db_result
+    # Try official CPIC API (covers 164+ drugs)
+    try:
+        from cpic_api import cpic_find_gene_for_drug, cpic_get_drug
+        gene = cpic_find_gene_for_drug(drug_upper)
+        if gene:
+            drug_info = cpic_get_drug(drug_upper) or {}
+            return {
+                "gene": gene,
+                "pathway": f"CPIC Level A/B gene-drug pair",
+                "drug_class": drug_info.get("atc", ""),
+            }
+    except Exception as e:
+        print(f"[CPIC API] Gene lookup failed for {drug_upper}: {e}")
+    return {}
+
+
+def get_allele_activity_db(star: str, gene: str) -> Optional[float]:
+    """Try Supabase for activity score, return None if unavailable."""
+    from supabase_client import db_get_allele_activity
+    return db_get_allele_activity(gene, star)
+
+
+def assess_risk(drug: str, phenotype: str, gene: str = "", diplotype: str = "") -> dict:
+    """
+    Get risk assessment + clinical recommendation.
+    Priority chain:
+      1. Official CPIC API (api.cpicpgx.org — 34 genes, 164+ drugs)
+      2. Supabase cpic_guidelines table (local DB)
+      3. Hardcoded fallback (6 core drugs)
+    """
+    drug_upper = resolve_drug(drug)
+
+    # ── 1. Try official CPIC API (covers ALL CPIC drugs) ──
+    if gene and diplotype:
+        try:
+            from cpic_api import cpic_lookup_full
+            cpic_result = cpic_lookup_full(drug_upper, gene, diplotype)
+            if cpic_result and cpic_result.get("risk_assessment"):
+                cpic_result["source"] = "cpic_api"
+                return cpic_result
+        except Exception as e:
+            print(f"[CPIC API] Lookup failed for {drug_upper}: {e}")
+
+    # ── 2. Try Supabase DB ──
+    from supabase_client import db_get_cpic_guideline
+    db_result = db_get_cpic_guideline(drug_upper, phenotype)
+    if db_result:
+        db_result["source"] = "supabase_db"
+        return db_result
+
+    # ── 3. Fallback to hardcoded ──
     if drug_upper not in RISK_MATRIX:
         return {
             "risk_assessment": {"risk_label": "Unknown", "confidence_score": 0.0, "severity": "low"},

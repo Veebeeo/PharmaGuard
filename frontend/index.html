@@ -15,21 +15,26 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
 .bg-mesh::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(600px at 20% 30%,rgba(45,106,79,.08),transparent),radial-gradient(500px at 80% 70%,rgba(212,160,83,.05),transparent);animation:md 25s ease-in-out infinite alternate}
 @keyframes md{0%{transform:translate(0,0)}100%{transform:translate(-30px,20px)}}
 
-/* NAV */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,11,16,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between}
+/* NAV — hidden until logged in */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(8,11,16,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:none;align-items:center;justify-content:space-between}
+.nav.vis{display:flex}
 .nav-brand{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;color:var(--text-1)}
 .nav-brand svg{width:32px;height:32px}
 .nav-brand-text{font-family:var(--fd);font-weight:700;font-size:1.15rem}
 .nav-brand-text span{color:var(--em-b)}
-.nav-links{display:flex;gap:6px}
+.nav-links{display:flex;gap:6px;align-items:center}
 .nav-link{background:0;border:0;color:var(--text-2);font-family:var(--fb);font-size:.88rem;font-weight:500;padding:8px 18px;border-radius:6px;cursor:pointer;transition:var(--tr)}
 .nav-link:hover{color:var(--text-1);background:rgba(255,255,255,.04)}
 .nav-link.active{color:var(--em-b);background:rgba(45,106,79,.12)}
+.user-tag{font-size:.75rem;color:var(--em-b);background:var(--r-safe-bg);padding:3px 10px;border-radius:999px;white-space:nowrap}
+.nav-logout{background:0;border:1px solid var(--border);color:var(--text-2);font-family:var(--fb);font-size:.8rem;font-weight:500;padding:6px 14px;border-radius:6px;cursor:pointer;transition:var(--tr);margin-left:6px}
+.nav-logout:hover{color:var(--r-tox);border-color:var(--r-tox)}
 
 /* PAGES */
 .app{position:relative;z-index:1}
-.page{display:none;min-height:100vh;padding-top:64px}
+.page{display:none;min-height:100vh}
 .page.active{display:block}
+.page.has-nav{padding-top:64px}
 
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--fb);font-weight:600;font-size:.92rem;padding:14px 28px;border-radius:var(--rad);border:0;cursor:pointer;transition:var(--tr);text-decoration:none}
@@ -39,7 +44,36 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
 .btn-s:hover{background:var(--bg-elevated);border-color:var(--text-3);transform:translateY(-1px)}
 .btn-sm{padding:8px 16px;font-size:.82rem}
 
-/* HERO */
+/* ═══ LOGIN PAGE (landing — full screen, no nav) ═══ */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;position:relative}
+.login-left{max-width:480px;margin-right:4rem}
+.login-left h1{font-family:var(--fd);font-weight:800;font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;margin-bottom:1rem}
+.login-left .gt{background:linear-gradient(135deg,var(--em-b),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-left p{color:var(--text-2);line-height:1.7;margin-bottom:1.5rem;font-size:.95rem}
+.login-stats{display:flex;gap:2rem}
+.login-stats div{text-align:center}
+.login-stats .sv{font-family:var(--fd);font-size:1.5rem;font-weight:700;color:var(--em-b)}
+.login-stats .sl{font-size:.68rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.06em}
+.login-card{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:2.5rem;width:400px;max-width:100%}
+.login-card h2{font-family:var(--fd);font-size:1.4rem;font-weight:700;margin-bottom:.3rem;text-align:center}
+.login-card>p{color:var(--text-3);font-size:.82rem;text-align:center;margin-bottom:1.5rem}
+.form-g{margin-bottom:1rem}
+.form-g label{display:block;font-size:.78rem;font-weight:600;margin-bottom:.4rem;color:var(--text-2);text-transform:uppercase;letter-spacing:.04em}
+.form-g input{width:100%;background:var(--bg-elevated);border:1px solid var(--border);border-radius:var(--rad);padding:12px 16px;color:var(--text-1);font-family:var(--fb);font-size:.9rem;outline:0;transition:var(--tr)}
+.form-g input:focus{border-color:var(--em-b)}
+.form-g input::placeholder{color:var(--text-3)}
+.login-divider{display:flex;align-items:center;gap:12px;margin:1.2rem 0;font-size:.72rem;color:var(--text-3)}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.login-footer{font-size:.7rem;color:var(--text-3);text-align:center;margin-top:1.2rem;line-height:1.5}
+
+/* ERROR BANNER (reused) */
+.eb{display:none;background:var(--r-tox-bg);border:1px solid rgba(192,57,43,.3);border-radius:var(--rad);padding:.8rem 1rem;margin-bottom:1rem;font-size:.82rem;color:#e8a49c}
+.eb.vis{display:flex;align-items:flex-start;gap:8px}
+.eb.success{background:var(--r-safe-bg);border-color:rgba(45,106,79,.3);color:var(--em-b)}
+.eb-x{margin-left:auto;background:0;border:0;color:inherit;cursor:pointer;font-size:1rem;opacity:.6}
+.eb-x:hover{opacity:1}
+
+/* ═══ HERO (post-login landing) ═══ */
 .hero{min-height:calc(100vh - 64px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 2rem}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(45,106,79,.12);border:1px solid rgba(45,106,79,.25);border-radius:999px;padding:6px 18px 6px 12px;font-size:.78rem;font-weight:500;color:var(--em-b);margin-bottom:2rem;letter-spacing:.03em;text-transform:uppercase;animation:fiu .6s ease-out}
 .pulse{width:8px;height:8px;background:var(--em-b);border-radius:50%;position:relative}
@@ -82,7 +116,6 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
 .pg-hd{margin-bottom:2.5rem}
 .pg-hd h1{font-family:var(--fd);font-size:2rem;font-weight:700;margin-bottom:.5rem}
 .pg-hd p{color:var(--text-2);font-size:.95rem}
-
 .steps{display:flex;margin-bottom:2.5rem;background:var(--bg-card);border-radius:16px;border:1px solid var(--border);overflow:hidden}
 .stp{flex:1;padding:1rem 1.5rem;display:flex;align-items:center;gap:12px;border-right:1px solid var(--border);transition:var(--tr)}
 .stp:last-child{border-right:0}
@@ -121,16 +154,9 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
 .di{flex:1;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rad);padding:12px 16px;color:var(--text-1);font-family:var(--fb);font-size:.88rem;transition:var(--tr);outline:0}
 .di:focus{border-color:var(--em-b)}
 .di::placeholder{color:var(--text-3)}
-
 .an-act{display:flex;gap:12px;align-items:center;margin-top:1rem}
 .btn-an{flex:none;padding:14px 36px}
 .btn-an:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-
-/* ERROR */
-.eb{display:none;background:var(--r-tox-bg);border:1px solid rgba(192,57,43,.3);border-radius:var(--rad);padding:1rem 1.5rem;margin-bottom:1.5rem;font-size:.88rem;color:#e8a49c}
-.eb.vis{display:flex;align-items:flex-start;gap:10px}
-.eb-x{margin-left:auto;background:0;border:0;color:#e8a49c;cursor:pointer;font-size:1rem;opacity:.6}
-.eb-x:hover{opacity:1}
 
 /* LOADING */
 .lo{display:none;position:fixed;inset:0;z-index:200;background:rgba(8,11,16,.88);backdrop-filter:blur(8px);flex-direction:column;align-items:center;justify-content:center;gap:1.5rem}
@@ -148,17 +174,14 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
 .rs-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
 .rs-hd h1{font-family:var(--fd);font-size:1.8rem;font-weight:700}
 .rs-act{display:flex;gap:8px}
-
 .rc{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;margin-bottom:1.5rem;overflow:hidden;transition:var(--tr)}
 .rc:hover{border-color:rgba(255,255,255,.08)}
-
 .rb{padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
 .rb.safe{background:var(--r-safe-bg);border-bottom:1px solid rgba(45,106,79,.2)}
 .rb.adjust{background:var(--r-adj-bg);border-bottom:1px solid rgba(212,160,83,.2)}
 .rb.toxic{background:var(--r-tox-bg);border-bottom:1px solid rgba(192,57,43,.2)}
 .rb.ineffective{background:var(--r-ineff-bg);border-bottom:1px solid rgba(231,76,60,.2)}
 .rb.unknown{background:var(--r-unk-bg);border-bottom:1px solid rgba(108,117,125,.2)}
-
 .rl{display:flex;align-items:center;gap:16px}
 .r-drug{font-family:var(--fd);font-size:1.4rem;font-weight:700}
 .r-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
@@ -168,22 +191,17 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
 .r-badge.ineffective{background:var(--r-ineff);color:#fff}
 .r-badge.unknown{background:var(--r-unk);color:#fff}
 .rm{display:flex;gap:1.5rem;font-size:.8rem;color:var(--text-2);flex-wrap:wrap}
-
-.cs{border-bottom:1px solid var(--border)}
-.cs:last-child{border-bottom:0}
+.cs{border-bottom:1px solid var(--border)}.cs:last-child{border-bottom:0}
 .st{width:100%;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;background:0;border:0;color:var(--text-1);cursor:pointer;font-family:var(--fb);font-size:.9rem;font-weight:600;text-align:left;transition:var(--tr)}
 .st:hover{background:rgba(255,255,255,.02)}
 .st .chv{transition:var(--tr);color:var(--text-3);font-size:.75rem}
 .st.open .chv{transform:rotate(180deg)}
-.sc{display:none;padding:0 1.5rem 1.2rem}
-.sc.open{display:block}
-
+.sc{display:none;padding:0 1.5rem 1.2rem}.sc.open{display:block}
 .pg{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
 .pi{background:var(--bg-elevated);border-radius:6px;padding:.8rem 1rem}
 .pi-l{font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
 .pi-v{font-size:.92rem;font-weight:600}
 .pi-v.mono{font-family:var(--fm);color:var(--em-b)}
-
 .vt{width:100%;border-collapse:collapse;font-size:.82rem}
 .vt th{text-align:left;padding:8px 10px;font-size:.7rem;color:var(--text-3);text-transform:uppercase;border-bottom:1px solid var(--border);font-weight:500}
 .vt td{padding:8px 10px;border-bottom:1px solid rgba(30,42,58,.5)}
@@ -196,7 +214,6 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
 .et.normal{background:var(--r-safe-bg);color:var(--em-b)}
 .et.increased_function{background:rgba(52,152,219,.12);color:#5dade2}
 .et.unknown{background:var(--r-unk-bg);color:var(--text-3)}
-
 .rd{background:var(--bg-elevated);border-radius:var(--rad);padding:1rem;margin-bottom:1rem;line-height:1.6;font-size:.88rem}
 .rr{display:flex;gap:1rem;margin-bottom:.8rem;flex-wrap:wrap}
 .rr-l{font-size:.72rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em;min-width:100px;padding-top:2px;font-weight:500}
@@ -207,11 +224,9 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
 .ut.urgent{background:var(--r-adj-bg);color:var(--gold)}
 .ut.soon{background:rgba(52,152,219,.12);color:#5dade2}
 .ut.routine{background:var(--r-safe-bg);color:var(--em-b)}
-
 .llm p{font-size:.88rem;line-height:1.7;margin-bottom:1rem;color:var(--text-2)}
 .llm strong{color:var(--text-1);font-weight:600}
 .llm-tag{display:inline-flex;font-size:.7rem;color:var(--text-3);font-family:var(--fm);background:var(--bg-elevated);padding:3px 10px;border-radius:6px;margin-top:.5rem}
-
 .jv{background:var(--bg-deep);border:1px solid var(--border);border-radius:var(--rad);margin-top:1rem}
 .jv-bar{display:flex;justify-content:flex-end;gap:6px;padding:8px 12px;border-bottom:1px solid var(--border)}
 .jv-btn{background:var(--bg-elevated);border:1px solid var(--border);color:var(--text-2);padding:4px 12px;border-radius:6px;font-size:.72rem;cursor:pointer;font-family:var(--fb);transition:var(--tr)}
@@ -232,46 +247,88 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
 .ti{background:var(--bg-elevated);border-radius:6px;padding:.8rem 1rem}
 .ti-l{font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.04em}
 .ti-v{font-size:.88rem;font-weight:500;margin-top:2px}
-
 .footer{text-align:center;padding:2rem;font-size:.75rem;color:var(--text-3);border-top:1px solid var(--border);margin-top:4rem}
+
+/* DASHBOARD */
+.dash-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:1.2rem 1.5rem;margin-bottom:.8rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:var(--tr);cursor:pointer;flex-wrap:wrap}
+.dash-card:hover{border-color:rgba(255,255,255,.08);transform:translateY(-1px)}
+.dash-left{display:flex;align-items:center;gap:1rem;flex:1;min-width:0}
+.dash-drug{font-family:var(--fd);font-size:1.1rem;font-weight:700;white-space:nowrap}
+.dash-meta{font-size:.78rem;color:var(--text-3)}
+.dash-right{display:flex;align-items:center;gap:.8rem}
+.dash-del{background:0;border:0;color:var(--text-3);cursor:pointer;font-size:.9rem;padding:4px 8px;border-radius:6px;transition:var(--tr)}
+.dash-del:hover{color:var(--r-tox);background:var(--r-tox-bg)}
+
 @keyframes fiu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .fin{animation:fiu .4s ease-out both}
-
-@media(max-width:768px){.nav{padding:0 1rem}.nav-link{padding:6px 10px;font-size:.8rem}.hero h1{font-size:2rem}.stats{gap:1.5rem}.stat-v{font-size:1.4rem}.steps{flex-direction:column}.stp{border-right:0;border-bottom:1px solid var(--border)}.pg{grid-template-columns:1fr}.rb{flex-direction:column;align-items:flex-start}.ts{grid-template-columns:1fr}.di-row{flex-direction:column}.rm{flex-wrap:wrap;gap:.5rem}}
+@media(max-width:768px){.nav{padding:0 1rem}.nav-link{padding:6px 10px;font-size:.8rem}.login-wrap{flex-direction:column;text-align:center}.login-left{margin-right:0;margin-bottom:2rem}.login-stats{justify-content:center}.hero h1{font-size:2rem}.stats{gap:1.5rem}.stat-v{font-size:1.4rem}.steps{flex-direction:column}.stp{border-right:0;border-bottom:1px solid var(--border)}.pg{grid-template-columns:1fr}.rb{flex-direction:column;align-items:flex-start}.ts{grid-template-columns:1fr}.di-row{flex-direction:column}.rm{flex-wrap:wrap;gap:.5rem}}
 </style>
 </head>
 <body>
 <div class="bg-mesh"></div>
 
-<nav class="nav">
-  <a class="nav-brand" onclick="navigate('landing')">
+<!-- ═══ NAV (only visible after login) ═══ -->
+<nav class="nav" id="main-nav">
+  <a class="nav-brand" onclick="navigate('home')">
     <svg viewBox="0 0 32 32" fill="none"><path d="M16 2L4 8v16l12 6 12-6V8L16 2z" stroke="#40916c" stroke-width="1.5" fill="rgba(45,106,79,.1)"/><path d="M10 12s2 4 6 4 6-4 6-4" stroke="#40916c" stroke-width="1.5" stroke-linecap="round"/><path d="M10 18s2 4 6 4 6-4 6-4" stroke="#d4a053" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="1.5" fill="#40916c"/><circle cx="20" cy="12" r="1.5" fill="#40916c"/><circle cx="14" cy="18" r="1.5" fill="#d4a053"/><circle cx="18" cy="18" r="1.5" fill="#d4a053"/></svg>
     <span class="nav-brand-text">Pharma<span>Guard</span> AI</span>
   </a>
   <div class="nav-links">
-    <button class="nav-link active" data-page="landing">Home</button>
+    <button class="nav-link active" data-page="home">Home</button>
     <button class="nav-link" data-page="analyze">Analyze</button>
     <button class="nav-link" data-page="results" id="nav-results" style="display:none">Results</button>
+    <button class="nav-link" data-page="dashboard">Dashboard</button>
     <button class="nav-link" data-page="about">About</button>
+    <span class="user-tag" id="user-tag"></span>
+    <button class="nav-logout" id="nav-logout" onclick="doLogout()">Logout</button>
   </div>
 </nav>
 
 <div class="app">
 
-<!-- LANDING -->
-<div class="page active" id="page-landing">
+<!-- ═══ PAGE: LOGIN (first thing user sees, full-screen, no nav) ═══ -->
+<div class="page active" id="page-login">
+  <div class="login-wrap">
+    <div class="login-left">
+      <div class="hero-badge" style="margin-bottom:1.5rem"><div class="pulse"></div>RIFT 2026 — Pharmacogenomics</div>
+      <h1>Decode Your Genes.<br><span class="gt">Protect Your Life.</span></h1>
+      <p>AI-powered pharmacogenomic risk analysis. Upload genetic data, select medications, and get CPIC-aligned clinical recommendations powered by Google Gemini — in seconds.</p>
+      <div class="login-stats">
+        <div><div class="sv">100K+</div><div class="sl">ADR Deaths/Year</div></div>
+        <div><div class="sv">34</div><div class="sl">Gene Panels</div></div>
+        <div><div class="sv">164+</div><div class="sl">CPIC Drugs</div></div>
+        <div><div class="sv">AI</div><div class="sl">Gemini Powered</div></div>
+      </div>
+    </div>
+    <div class="login-card">
+      <h2>Clinician Portal</h2>
+      <p>Sign in to access pharmacogenomic analysis tools</p>
+      <div class="eb" id="auth-err"><span>&#9888;</span><span id="auth-err-t"></span><button class="eb-x" onclick="document.getElementById('auth-err').classList.remove('vis');document.getElementById('auth-err').classList.remove('success')">&times;</button></div>
+      <div class="form-g"><label>Email</label><input type="email" id="auth-email" placeholder="doctor@hospital.com"></div>
+      <div class="form-g"><label>Password</label><input type="password" id="auth-pw" placeholder="Min 6 characters" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn btn-p" style="width:100%;justify-content:center;margin-top:.5rem" onclick="doLogin()">Sign In</button>
+      <div class="login-divider">or</div>
+      <button class="btn btn-s" style="width:100%;justify-content:center" onclick="doSignup()">Create Account</button>
+      <div class="login-footer">Powered by Supabase Auth &middot; HIPAA-ready RLS architecture<br>Patient data isolated per clinician via Row Level Security</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: HOME (post-login landing with features) ═══ -->
+<div class="page has-nav" id="page-home">
   <div class="hero">
-    <div class="hero-badge"><div class="pulse"></div>RIFT 2026 — Pharmacogenomics Challenge</div>
-    <h1>Decode Your Genes.<br><span class="gt">Protect Your Life.</span></h1>
-    <p class="hero-sub">Upload genetic data. Select a drug. Get AI-powered pharmacogenomic risk predictions with CPIC-aligned clinical recommendations — in seconds.</p>
+    <div class="hero-badge"><div class="pulse"></div>Welcome back, Clinician</div>
+    <h1>Pharmacogenomic<br><span class="gt">Risk Analysis</span></h1>
+    <p class="hero-sub">Upload VCF genetic data, select drugs, and receive AI-powered risk predictions with CPIC-aligned clinical recommendations.</p>
     <div class="hero-act">
-      <button class="btn btn-p" onclick="navigate('analyze')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Start Analysis</button>
+      <button class="btn btn-p" onclick="navigate('analyze')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>New Analysis</button>
+      <button class="btn btn-s" onclick="navigate('dashboard')">&#x1F4CB; View Dashboard</button>
       <button class="btn btn-s" onclick="navigate('about')">Learn More</button>
     </div>
     <div class="stats">
       <div><div class="stat-v">100K+</div><div class="stat-l">Annual ADR Deaths</div></div>
-      <div><div class="stat-v">6</div><div class="stat-l">Gene Panels</div></div>
-      <div><div class="stat-v">6</div><div class="stat-l">Supported Drugs</div></div>
+      <div><div class="stat-v">34</div><div class="stat-l">Gene Panels</div></div>
+      <div><div class="stat-v">164+</div><div class="stat-l">CPIC Drugs</div></div>
       <div><div class="stat-v">AI</div><div class="stat-l">Gemini Powered</div></div>
     </div>
   </div>
@@ -297,8 +354,8 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
   <div class="footer">PharmaGuard AI &mdash; RIFT 2026 Hackathon &mdash; For research and educational purposes only.</div>
 </div>
 
-<!-- ANALYZE -->
-<div class="page" id="page-analyze">
+<!-- ═══ PAGE: ANALYZE ═══ -->
+<div class="page has-nav" id="page-analyze">
   <div class="an-pg">
     <div class="pg-hd"><h1>Analyze Genetic Data</h1><p>Upload a VCF file and select drugs to generate pharmacogenomic risk predictions.</p></div>
     <div class="steps">
@@ -336,8 +393,8 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
   <div class="footer">PharmaGuard AI &mdash; RIFT 2026 Hackathon</div>
 </div>
 
-<!-- RESULTS -->
-<div class="page" id="page-results">
+<!-- ═══ PAGE: RESULTS ═══ -->
+<div class="page has-nav" id="page-results">
   <div class="rs-pg">
     <div class="rs-hd">
       <div><h1>Analysis Results</h1><p style="color:var(--text-2);font-size:.88rem" id="rs-sub"></p></div>
@@ -352,8 +409,26 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
   <div class="footer">PharmaGuard AI &mdash; RIFT 2026 Hackathon</div>
 </div>
 
-<!-- ABOUT -->
-<div class="page" id="page-about">
+<!-- ═══ PAGE: DASHBOARD ═══ -->
+<div class="page has-nav" id="page-dashboard">
+  <div class="rs-pg">
+    <div class="rs-hd">
+      <div><h1>Patient Dashboard</h1><p style="color:var(--text-2);font-size:.88rem" id="dash-sub">Your saved pharmacogenomic reports</p></div>
+      <div class="rs-act"><button class="btn btn-p btn-sm" onclick="navigate('analyze')">+ New Analysis</button></div>
+    </div>
+    <div id="dash-loading" style="text-align:center;padding:3rem;color:var(--text-3)">Loading reports...</div>
+    <div id="dash-empty" style="display:none;text-align:center;padding:3rem">
+      <div style="font-size:2rem;margin-bottom:1rem;opacity:.4">&#x1F4CB;</div>
+      <p style="color:var(--text-3)">No reports yet. Run your first analysis to get started.</p>
+      <button class="btn btn-p btn-sm" style="margin-top:1rem" onclick="navigate('analyze')">Start Analysis</button>
+    </div>
+    <div id="dash-list"></div>
+  </div>
+  <div class="footer">PharmaGuard AI &mdash; RIFT 2026 Hackathon</div>
+</div>
+
+<!-- ═══ PAGE: ABOUT ═══ -->
+<div class="page has-nav" id="page-about">
   <div class="ab-pg">
     <h1>About PharmaGuard AI</h1>
     <p>AI-powered pharmacogenomic risk analysis for safer prescribing.</p>
@@ -365,7 +440,7 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
         <div class="ti"><div class="ti-l">Backend</div><div class="ti-v">Python FastAPI</div></div>
         <div class="ti"><div class="ti-l">AI Engine</div><div class="ti-v">Google Gemini 2.0 Flash</div></div>
         <div class="ti"><div class="ti-l">VCF Parsing</div><div class="ti-v">Custom Python Parser</div></div>
-        <div class="ti"><div class="ti-l">Risk Engine</div><div class="ti-v">CPIC-aligned Rules</div></div>
+        <div class="ti"><div class="ti-l">Risk Engine</div><div class="ti-v">CPIC API + Supabase</div></div>
         <div class="ti"><div class="ti-l">Deployment</div><div class="ti-v">Render / Vercel</div></div>
       </div>
     </div>
@@ -382,7 +457,7 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
   <div class="footer">PharmaGuard AI &mdash; RIFT 2026 &mdash; #RIFT2026 #PharmaGuard #Pharmacogenomics #AIinHealthcare</div>
 </div>
 
-</div>
+</div><!-- /app -->
 
 <div class="lo" id="lo">
   <div class="dna-l"></div>
@@ -392,20 +467,91 @@ body{font-family:var(--fb);background:var(--bg-deep);color:var(--text-1);line-he
 
 <script>
 const API=window.location.origin;
-let curPage='landing',upFile=null,selDrugs=new Set(),aResults=null;
+let curPage='login',upFile=null,selDrugs=new Set(),aResults=null;
 
+// ━━━ AUTH STATE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+let authToken=localStorage.getItem('pg_token')||null;
+let authUser=JSON.parse(localStorage.getItem('pg_user')||'null');
+
+function setAuth(token,user){
+  authToken=token;authUser=user;
+  if(token){localStorage.setItem('pg_token',token);localStorage.setItem('pg_user',JSON.stringify(user))}
+  else{localStorage.removeItem('pg_token');localStorage.removeItem('pg_user')}
+}
+
+function isLoggedIn(){return !!authToken}
+
+// ━━━ NAVIGATION (auth-gated) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function navigate(p){
+  // If not logged in, only allow login page
+  if(!isLoggedIn()&&p!=='login'){p='login'}
+  // If logged in and trying to go to login, redirect to home
+  if(isLoggedIn()&&p==='login'){p='home'}
+
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
   const el=document.getElementById('page-'+p);
   if(el)el.classList.add('active');
   const nl=document.querySelector(`.nav-link[data-page="${p}"]`);
   if(nl)nl.classList.add('active');
-  curPage=p;window.scrollTo({top:0,behavior:'smooth'});
-}
-document.querySelectorAll('.nav-link').forEach(l=>l.addEventListener('click',()=>navigate(l.dataset.page)));
 
-// FILE UPLOAD
+  // Show/hide nav
+  document.getElementById('main-nav').classList.toggle('vis',isLoggedIn());
+
+  curPage=p;
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  // Auto-load dashboard data
+  if(p==='dashboard'&&isLoggedIn())loadDashboard();
+}
+
+document.querySelectorAll('.nav-link').forEach(l=>l.addEventListener('click',()=>{if(l.dataset.page)navigate(l.dataset.page)}));
+
+// ━━━ AUTH FUNCTIONS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function showAuthErr(msg,type){
+  const el=document.getElementById('auth-err');
+  document.getElementById('auth-err-t').textContent=msg;
+  el.classList.remove('success');
+  if(type==='success')el.classList.add('success');
+  el.classList.add('vis');
+}
+
+async function doLogin(){
+  const email=document.getElementById('auth-email').value.trim();
+  const pw=document.getElementById('auth-pw').value;
+  if(!email||!pw){showAuthErr('Email and password required.');return}
+  try{
+    const r=await fetch(API+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.detail||'Login failed');
+    setAuth(d.access_token,d.user);
+    document.getElementById('user-tag').textContent=d.user.email;
+    navigate('home');
+  }catch(e){showAuthErr(e.message)}
+}
+
+async function doSignup(){
+  const email=document.getElementById('auth-email').value.trim();
+  const pw=document.getElementById('auth-pw').value;
+  if(!email||!pw){showAuthErr('Email and password required.');return}
+  if(pw.length<6){showAuthErr('Password must be 6+ characters.');return}
+  try{
+    const r=await fetch(API+'/api/auth/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pw})});
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.detail||'Signup failed');
+    showAuthErr('Account created! You can now sign in.','success');
+  }catch(e){showAuthErr(e.message)}
+}
+
+function doLogout(){
+  setAuth(null,null);
+  document.getElementById('auth-email').value='';
+  document.getElementById('auth-pw').value='';
+  document.getElementById('auth-err').classList.remove('vis','success');
+  navigate('login');
+}
+
+// ━━━ FILE UPLOAD ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const uz=document.getElementById('uz'),finp=document.getElementById('finp');
 ['dragenter','dragover'].forEach(e=>uz.addEventListener(e,ev=>{ev.preventDefault();uz.classList.add('drag')}));
 ['dragleave','drop'].forEach(e=>uz.addEventListener(e,ev=>{ev.preventDefault();uz.classList.remove('drag')}));
@@ -427,7 +573,7 @@ function showOk(f){document.getElementById('uz-p').style.display='none';document
 function rmFile(ev){ev.stopPropagation();upFile=null;finp.value='';document.getElementById('uz-p').style.display='';document.getElementById('uz-ok').style.display='none';uz.classList.remove('has');updSteps();updBtn()}
 function fmtSz(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(2)+' MB'}
 
-// DRUG SELECT
+// ━━━ DRUG SELECT ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 document.querySelectorAll('.pill').forEach(p=>p.addEventListener('click',()=>{
   const d=p.dataset.drug;
   if(selDrugs.has(d)){selDrugs.delete(d);p.classList.remove('sel')}else{selDrugs.add(d);p.classList.add('sel')}
@@ -457,23 +603,27 @@ updBtn();
 function showErr(m){document.getElementById('eb-t').textContent=m;document.getElementById('eb').classList.add('vis')}
 function hideErr(){document.getElementById('eb').classList.remove('vis')}
 
-// ANALYSIS
+// ━━━ ANALYSIS (always uses secure endpoint since user is always logged in) ━━━
 async function runAnalysis(){
   if(!upFile||!selDrugs.size)return;hideErr();
   const lo=document.getElementById('lo'),los=document.getElementById('lo-s');lo.classList.add('active');
-  const msgs=['Parsing VCF file...','Detecting pharmacogenomic variants...','Calculating diplotypes and phenotypes...','Querying CPIC risk matrix...','Generating AI explanations...','Assembling report...'];
+  const msgs=['Parsing VCF file...','Detecting pharmacogenomic variants...','Querying CPIC guidelines...','Generating AI explanations...','Saving to dashboard...','Assembling report...'];
   let mi=0;const si=setInterval(()=>{mi=(mi+1)%msgs.length;los.textContent=msgs[mi]},2e3);
   try{
     const fd=new FormData();fd.append('vcf_file',upFile);fd.append('drugs',Array.from(selDrugs).join(','));
-    const res=await fetch(API+'/api/analyze',{method:'POST',body:fd});
+    const endpoint=authToken?'/api/analyze-secure':'/api/analyze';
+    const headers=authToken?{'Authorization':'Bearer '+authToken}:{};
+    const res=await fetch(API+endpoint,{method:'POST',body:fd,headers});
     if(!res.ok){let em='Analysis failed.';try{em=(await res.json()).detail||em}catch{}throw new Error(em)}
-    aResults=await res.json();renderResults(aResults);
+    const data=await res.json();
+    aResults=data.results?data:{results:data.results||[data],total_drugs_analyzed:data.total_drugs_analyzed||1,analysis_id:data.analysis_id||''};
+    renderResults(aResults);
     document.getElementById('nav-results').style.display='';navigate('results');
-  }catch(e){showErr(e.message||'Failed to connect to server. Ensure the backend is running.')}
+  }catch(e){showErr(e.message||'Failed to connect to server.')}
   finally{clearInterval(si);lo.classList.remove('active')}
 }
 
-// RENDER RESULTS
+// ━━━ RENDER RESULTS ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function renderResults(data){
   const c=document.getElementById('rcon'),rs=data.results||[];
   document.getElementById('rs-sub').textContent=`${rs.length} drug(s) analyzed · Patient: ${rs[0]?.patient_id||'Unknown'}`;
@@ -500,14 +650,12 @@ function renderCard(r,idx){
     <div class="pi"><div class="pi-l">Phenotype</div><div class="pi-v">${pf(p.phenotype)}</div></div>
     <div class="pi"><div class="pi-l">Variants Detected</div><div class="pi-v">${vs.length}</div></div>
   </div>${vs.length?`<table class="vt" style="margin-top:1rem"><thead><tr><th>rsID</th><th>Star</th><th>GT</th><th>Effect</th><th>Qual</th></tr></thead><tbody>${vs.map(v=>`<tr><td class="rsid">${v.rsid}</td><td class="star">${v.star_allele}</td><td>${v.genotype||'—'}</td><td><span class="et ${v.functional_effect}">${fe(v.functional_effect)}</span></td><td>${v.quality||'—'}</td></tr>`).join('')}</tbody></table>`:'<p style="color:var(--text-3);font-size:.85rem;margin-top:.5rem">No variants — wildtype assumed.</p>'}</div></div>
-
   <div class="cs"><button class="st open">&#x1F4CB; Clinical Recommendation<span class="chv">&#x25BC;</span></button>
   <div class="sc open"><div class="rd">${rec.dosing_recommendation}</div>
   ${rec.urgency?`<div class="rr"><span class="rr-l">Urgency</span><span class="ut ${rec.urgency}">${rec.urgency}</span></div>`:''}
   ${rec.alternative_drugs?.length?`<div class="rr"><span class="rr-l">Alternatives</span><div class="rr-chips">${rec.alternative_drugs.map(d=>`<span class="rr-c">${d}</span>`).join('')}</div></div>`:''}
   ${rec.monitoring_parameters?.length?`<div class="rr"><span class="rr-l">Monitoring</span><div class="rr-chips">${rec.monitoring_parameters.map(m=>`<span class="rr-c">${m}</span>`).join('')}</div></div>`:''}
   ${rec.cpic_guideline_reference?`<div class="rr"><span class="rr-l">CPIC Ref</span><span style="font-size:.8rem;color:var(--text-3)">${rec.cpic_guideline_reference}</span></div>`:''}</div></div>
-
   <div class="cs"><button class="st">&#x1F916; AI-Generated Explanation<span class="chv">&#x25BC;</span></button>
   <div class="sc"><div class="llm">
     <p><strong>Summary:</strong> ${llm.summary}</p>
@@ -517,7 +665,6 @@ function renderCard(r,idx){
     ${llm.citations?.length?`<p style="font-size:.78rem;color:var(--text-3)"><strong>References:</strong> ${llm.citations.join(' · ')}</p>`:''}
     <div class="llm-tag">&#x2728; ${llm.model_used}</div>
   </div></div></div>
-
   <div class="cs"><button class="st">&#x2699; Quality Metrics<span class="chv">&#x25BC;</span></button>
   <div class="sc"><div class="pg">
     <div class="pi"><div class="pi-l">VCF Parsing</div><div class="pi-v">${qm.vcf_parsing_success?'✓ Success':'✗ Failed'}</div></div>
@@ -525,7 +672,6 @@ function renderCard(r,idx){
     <div class="pi"><div class="pi-l">PGx Variants</div><div class="pi-v">${qm.pharmacogenomic_variants_found}</div></div>
     <div class="pi"><div class="pi-l">Gene Coverage</div><div class="pi-v mono" style="font-size:.78rem">${qm.gene_coverage?.join(', ')||'None'}</div></div>
   </div></div></div>
-
   <div class="cs"><button class="st">&#x7B;&#x7D; Raw JSON Output<span class="chv">&#x25BC;</span></button>
   <div class="sc"><div class="jv"><div class="jv-bar"><button class="jv-btn" onclick="cpJ(${idx})">Copy</button><button class="jv-btn" onclick="dlJ(${idx})">Download</button></div><pre class="jv-pre">${eh(JSON.stringify(r,null,2))}</pre></div></div></div>
   </div></div>`;
@@ -535,6 +681,64 @@ function cpJ(i){const r=aResults.results[i];navigator.clipboard.writeText(JSON.s
 function dlJ(i){const r=aResults.results[i],b=new Blob([JSON.stringify(r,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=`pharmaguard_${r.drug}_${r.patient_id}.json`;a.click();URL.revokeObjectURL(u)}
 function cpAll(){navigator.clipboard.writeText(JSON.stringify(aResults,null,2))}
 function dlAll(){const b=new Blob([JSON.stringify(aResults,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='pharmaguard_full_analysis.json';a.click();URL.revokeObjectURL(u)}
+
+// ━━━ DASHBOARD ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function loadDashboard(){
+  if(!authToken)return;
+  const ll=document.getElementById('dash-loading'),em=document.getElementById('dash-empty'),ls=document.getElementById('dash-list');
+  ll.style.display='';em.style.display='none';ls.innerHTML='';
+  try{
+    const r=await fetch(API+'/api/dashboard',{headers:{'Authorization':'Bearer '+authToken}});
+    if(!r.ok)throw new Error('Failed to load');
+    const d=await r.json();
+    ll.style.display='none';
+    if(!d.reports||!d.reports.length){em.style.display='';return}
+    document.getElementById('dash-sub').textContent=`${d.total} saved report(s) · ${authUser?.email||''}`;
+    ls.innerHTML=d.reports.map(rp=>{
+      const cls=rc(rp.risk_label);
+      return`<div class="dash-card" onclick="viewReport('${rp.id}')">
+        <div class="dash-left">
+          <span class="r-badge ${cls}" style="flex-shrink:0">${ri(cls)} ${rp.risk_label}</span>
+          <span class="dash-drug">${rp.drug}</span>
+          <span class="dash-meta">${rp.gene} ${rp.diplotype||''} → ${rp.phenotype||''} · ${rp.patient_id} · ${new Date(rp.created_at).toLocaleDateString()}</span>
+        </div>
+        <div class="dash-right">
+          <button class="dash-del" onclick="event.stopPropagation();delReport('${rp.id}')" title="Delete">&#x1F5D1;</button>
+        </div>
+      </div>`;
+    }).join('');
+  }catch(e){ll.textContent='Failed to load reports. '+e.message}
+}
+
+async function viewReport(id){
+  if(!authToken)return;
+  try{
+    const r=await fetch(API+'/api/dashboard/'+id,{headers:{'Authorization':'Bearer '+authToken}});
+    if(!r.ok)throw new Error('Not found');
+    const d=await r.json();
+    if(d.report_json){
+      aResults={results:[d.report_json],total_drugs_analyzed:1,analysis_id:''};
+      renderResults(aResults);
+      document.getElementById('nav-results').style.display='';navigate('results');
+    }
+  }catch(e){alert('Error loading report: '+e.message)}
+}
+
+async function delReport(id){
+  if(!confirm('Delete this report?'))return;
+  try{
+    await fetch(API+'/api/dashboard/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+authToken}});
+    loadDashboard();
+  }catch(e){alert('Delete failed: '+e.message)}
+}
+
+// ━━━ INIT: check if already logged in ━━━━━━━━━━━━━━━━━━━━━━━━━━
+if(isLoggedIn()){
+  document.getElementById('user-tag').textContent=authUser?.email||'';
+  navigate('home');
+}else{
+  navigate('login');
+}
 </script>
 </body>
 </html>

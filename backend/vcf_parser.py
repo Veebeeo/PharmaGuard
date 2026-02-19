@@ -255,7 +255,11 @@ def build_profile_for_drug(parsed_vcf: Dict, drug: str) -> Dict:
     """
     drug_upper = resolve_drug(drug)
 
-    if drug_upper not in DRUG_GENE_MAP:
+    # Use get_drug_gene_info which checks hardcoded → Supabase → CPIC API
+    from risk_engine import get_drug_gene_info
+    drug_info = get_drug_gene_info(drug_upper)
+
+    if not drug_info or not drug_info.get("gene"):
         return {
             "primary_gene": "Unknown",
             "diplotype": "Unknown",
@@ -263,7 +267,7 @@ def build_profile_for_drug(parsed_vcf: Dict, drug: str) -> Dict:
             "detected_variants": [],
         }
 
-    gene = DRUG_GENE_MAP[drug_upper]["gene"]
+    gene = drug_info["gene"]
     gene_variants = parsed_vcf["gene_variants"].get(gene, [])
 
     if not gene_variants:
