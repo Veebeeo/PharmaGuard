@@ -6,7 +6,7 @@
 
 [![Live Demo (Vercel)](https://img.shields.io/badge/Live_Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://pharma-guard-iota.vercel.app/)
 [![Live Demo (Render)](https://img.shields.io/badge/Live_Demo-Render-2d6a4f?style=for-the-badge)](https://pharmaguard-f2fy.onrender.com)
-[![LinkedIn Video](https://img.shields.io/badge/LinkedIn-Demo_Video-0A66C2?style=for-the-badge)](YOUR_LINKEDIN_VIDEO_URL_HERE)
+[![LinkedIn Video](https://img.shields.io/badge/LinkedIn-Demo_Video-0A66C2?style=for-the-badge)](https://www.linkedin.com/posts/viseshbajpai04_rift2026-hackathon-activity-7430411401468465152-rXpm?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFcNs-EB1OBHtXz1qrrmadVei80a4uN-yvk)
 [![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Gemini](https://img.shields.io/badge/Gemini_2.0-Flash-8E24AA?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev)
@@ -55,7 +55,9 @@ Adverse drug reactions (ADRs) kill **over 100,000 Americans annually**. Many of 
 |----------|------|
 | **Live Application (Vercel)** | [pharma-guard-iota.vercel.app](https://pharma-guard-iota.vercel.app/) |
 | **Live Application (Render)** | [pharmaguard-f2fy.onrender.com](https://pharmaguard-f2fy.onrender.com) |
-| **LinkedIn Video Demo** | *[Coming Soon — link will be updated here]* |
+| **LinkedIn Video Demo** |
+[[]](https://www.linkedin.com/posts/viseshbajpai04_rift2026-hackathon-activity-7430411401468465152-rXpm?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFcNs-EB1OBHtXz1qrrmadVei80a4uN-yvk)
+
 
 ---
 
