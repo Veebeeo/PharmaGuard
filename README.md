@@ -55,8 +55,7 @@ Adverse drug reactions (ADRs) kill **over 100,000 Americans annually**. Many of 
 |----------|------|
 | **Live Application (Vercel)** | [pharma-guard-iota.vercel.app](https://pharma-guard-iota.vercel.app/) |
 | **Live Application (Render)** | [pharmaguard-f2fy.onrender.com](https://pharmaguard-f2fy.onrender.com) |
-| **LinkedIn Video Demo** |
-[[]](https://www.linkedin.com/posts/viseshbajpai04_rift2026-hackathon-activity-7430411401468465152-rXpm?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFcNs-EB1OBHtXz1qrrmadVei80a4uN-yvk)
+| **LinkedIn Video Demo** | [https://www.linkedin.com/posts/viseshbajpai04_rift2026-hackathon-activity-7430411401468465152-rXpm?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFcNs-EB1OBHtXz1qrrmadVei80a4uN-yvk](https://www.linkedin.com/posts/viseshbajpai04_rift2026-hackathon-activity-7430411401468465152-rXpm?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFcNs-EB1OBHtXz1qrrmadVei80a4uN-yvk)
 
 
 ---
